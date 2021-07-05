@@ -1,0 +1,14 @@
+[
+    {   
+        "name": "Fernando",
+        "surname": "NandoLT",
+        "email":"fernando@wallapop.es",
+        "password":"1234"
+    },
+    {
+        "name": "Veronica",
+        "surname": "VeroCR",
+        "email":"veronica@wallapop.com",
+        "password":"5678"
+    }
+]

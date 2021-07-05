@@ -1,6 +1,7 @@
 'use strict';
 
 const mongoose = require('mongoose');
+require('dotenv').config();
 
 mongoose.connection.on('error', err => {
   console.log('Error de conexión', err);

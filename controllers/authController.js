@@ -2,6 +2,7 @@
 
 // local requires
 const { User } = require('../models');
+const jwt = require('jsonwebtoken')
 
 class AuthController {
 
@@ -18,7 +19,39 @@ class AuthController {
 
             res.status(201).json({ result: newUser });
         } catch (error) {
-            res.status(500).json({ error: error.message })
+            res.status(500).json({ error: error.message });
+        }
+    }
+
+    /**
+     * POST /login
+     */
+    async login(req, res , next) {
+        try {
+            const {email, password} = req.body;
+
+            const userResponse = await User.findOne({ email });
+
+            if(!userResponse || !(await userResponse.comparePassword(password))) {
+                const error= new Error('Invalid Credentials')
+                error.status = 401
+                next(error)
+                return
+            }
+
+            jwt.sign({_id: userResponse._id}, process.env.JWT_SECRET, {expiresIn: '2h'}, async (err, jwtToken) => {
+                if (err) {
+                    next(err)
+                    return
+                }
+                res.json({
+                    msg: 'Token Created',
+                    token: jwtToken,       
+                })
+            })
+            
+        } catch (error) {
+            res.satus(500).json({ error: error.message });
         }
     }
 

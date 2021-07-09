@@ -55,6 +55,19 @@ class AuthController {
         }
     }
 
+    /**
+     * POST /logout
+     */
+    async logout(req, res, next) {
+        try {
+            // por ahora no hay logica por parte de back,
+            // simplemente devolvemos un 200 para que front lo gestione
+            res.status(200).json({ result: true });
+        }
+        catch (error) {
+            res.status(500).json({ error: error.message });
+        }
+    }
 }
 
 module.exports = new AuthController();

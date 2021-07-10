@@ -1,3 +1,3 @@
 module.exports = {
-    FillByFilters = require('./advertsFillByFilters').FillByFilters
+    FillByFilters: require('./advertsFillByFilters').FillByFilters
 };

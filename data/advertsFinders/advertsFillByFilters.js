@@ -1,6 +1,6 @@
 'use strict';
 
-export async function FillByFilters(name, status, price, tag, skip, limit, sort) {
+async function FillByFilters(name, status, price, tag, skip, limit, sort) {
     const filtro = {};
 
     if (name) {
@@ -43,3 +43,5 @@ export async function FillByFilters(name, status, price, tag, skip, limit, sort)
 
     return filtro;
 };
+
+module.exports = FillByFilters

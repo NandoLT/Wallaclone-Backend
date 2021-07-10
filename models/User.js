@@ -19,7 +19,11 @@ const userSchema = mongoose.Schema ({
         unique: true,
         index: true
     },
-    password: String
+    password: String,
+    favorites: {
+      type: Array,
+      index: true
+    }
 });
 
 userSchema.methods.hashPassword = async function(password) {

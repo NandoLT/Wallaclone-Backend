@@ -9,5 +9,6 @@ const router = express.Router();
  * Add favorites products to specific user
  */
 router.post('/addFavorite', require('../../controllers/productsController').addFavorite);
+router.post('/removeFavorite', require('../../controllers/productsController').removeFavorite);
 
 module.exports = router;

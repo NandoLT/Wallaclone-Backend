@@ -29,6 +29,10 @@ class ProductsController {
 
     }
 
+
+    /**
+     * POST /removeFavorite
+     */
     async removeFavorite(req, res, next) {
         
         try {

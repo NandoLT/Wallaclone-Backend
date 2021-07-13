@@ -1,0 +1,16 @@
+[
+  {
+    "name": "Keyboard",
+    "status": 0,
+    "price": 50,
+    "photo": "",
+    "tags": ["mobile", "tech"]
+  },
+  {
+    "name": "Laptop",
+    "status": 1,
+    "price": 299.99,
+    "photo": "",
+    "tags": ["software", "tech"]
+  }
+]

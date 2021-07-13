@@ -1,17 +1,39 @@
 'use strict';
 
 // local requires
-const { User } = require('../models');
+const { User, Advert } = require('../models');
 
-class ProductsController {
+class AdvertsController {
+
+    /**
+     * GET /
+     */
+    async getAdverts(req, res, next) {
+        try {
+            const { 
+                name, 
+                status, 
+                minPrice, 
+                maxPrice, 
+                tags, 
+                skip, 
+                limit, 
+                sort 
+            } = req.query;
+            const advert = new Advert();
+
+            const result = await advert.fillByFilters(name, status, minPrice, maxPrice, tags, skip, limit, sort);
+            res.status(200).json({ result });
+        } catch (error) {
+            res.status(500).json({ error: error.message });
+        }
+    }
 
     /**
      * POST /addFavorite
      */
-    async addFavorite(req, res, next) {
-        
-        try {
-   
+    async addFavorite(req, res, next) {        
+        try {   
             const { userId, productId } = req.body;
             const _id = userId;
     
@@ -21,22 +43,17 @@ class ProductsController {
     
             res.status(201).json({ result: `${productId} add to ${_id}` });
             
-        } catch (error) {
-            
+        } catch (error) {            
             res.status(500).json({ result: `Problems to add product ${productId} in user ${_id}`})
-
         }
-
     }
 
 
     /**
      * POST /removeFavorite
      */
-    async removeFavorite(req, res, next) {
-        
+    async removeFavorite(req, res, next) {        
         try {
-
             const { userId, productId } = req.body;
             const _id = userId;
 
@@ -50,12 +67,9 @@ class ProductsController {
             res.status(200).json({ result: `${productId} remove from ${_id}` })
             
         } catch (error) {
-
             res.status(500).json({ result: `Problems to remove product ${productId} from user ${_id}`})
-
         }
     }
-
 }
 
-module.exports = new ProductsController();
+module.exports = new AdvertsController();

@@ -33,17 +33,16 @@ class AuthController {
             const userResponse = await User.findOne({ email });
 
             if(!userResponse || !(await userResponse.comparePassword(password))) {
-                // const error= new Error('Invalid Credentials')
-                // error.status = 401
-                // next(error)
-                // return
-                res.status(401).json({ result: "Invalid Credentials" });
+                const error= new Error('Invalid Credentials');
+                error.status = 401;
+                res.status(error.status).json({ error: error.message });
+                return;
             }
 
             jwt.sign({_id: userResponse._id}, process.env.JWT_SECRET, {expiresIn: '2h'}, async (err, jwtToken) => {
                 if (err) {
-                    next(err)
-                    return
+                    next(err);
+                    return;
                 }
                 res.json({
                     msg: 'Token Created',

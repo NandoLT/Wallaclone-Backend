@@ -1,47 +1,31 @@
 'use strict';
 
-async function FillByFilters(name, status, price, tag, skip, limit, sort) {
-    const filtro = {};
+async function FillByFilters(name, status, minPrice, maxPrice, tags) {
+    const filter = {};
 
     if (name) {
         const regex = name
-        filtro.name = { $regex: regex, $options: 'i' }
+        filter.name = { $regex: regex, $options: 'i' }
     }
 
 
     if (status) {
-        filtro.status = status
+        filter.status = status
     }
 
-
-    if (price) {
-        if (!price.toString().includes('-')) {
-            filtro.price = price
-        }
-        else {
-            const position = price.indexOf('-');
-            const split = price.split('-');
-            if (split[0] == '') {
-                const filterPrice = split[1];
-                filtro.price = { $lte: parseFloat(filterPrice) }
-            }
-            else if (split[1] == '') {
-                const filterPrice = split[0];
-                filtro.price = { $gte: parseFloat(filterPrice) }
-            }
-            else {
-                const minPrice = split[0];
-                const maxPrice = split[1];
-                filtro.price = { $gte: parseFloat(minPrice), $lte: parseFloat(maxPrice) }
-            }
-        }
+    if (minPrice && !maxPrice) {
+        filter.price = { $gte: parseFloat(filterPrice) }
+    } else if (!minPrice && maxPrice) {
+        filter.price = { $lte: parseFloat(filterPrice) }
+    } else if (minPrice && maxPrice) {
+        filter.price = { $gte: parseFloat(minPrice), $lte: parseFloat(maxPrice) }
     }
 
-    if (tag) {
-        filtro.tags = tag
+    if (tags) {
+        filter.tags = tags
     }
 
-    return filtro;
+    return filter;
 };
 
 module.exports = FillByFilters

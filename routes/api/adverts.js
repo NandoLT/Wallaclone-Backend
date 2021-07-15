@@ -8,18 +8,25 @@ const express = require('express');
 const router = express.Router();
 
 const {
+    getAdverts,
     addFavorite,
     removeFavorite,
-} = require('../../controllers/productsController')
+} = require('../../controllers/advertsController')
+
+/**
+ * GET /
+ * Get adverts
+ */
+router.get('/', getAdverts);
 
 /**
  * POST /addFavorite
- * Add favorites products to specific user
+ * Add favorites advert to specific user
  */
 router.post('/addFavorite', jwtAuth, addFavorite)
 /**
  * POST /removeFavorite
- * Remove product from favorites to specific user
+ * Remove advert from favorites to specific user
  */
 router.post('/removeFavorite', jwtAuth, removeFavorite)
 

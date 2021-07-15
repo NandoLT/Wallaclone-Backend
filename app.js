@@ -16,7 +16,7 @@ app.use(cors());
 
 // api routes
 app.use('/api/users', require('./routes/api/users'));
-app.use('/api/products', require('./routes/api/products'));
+app.use('/api/adverts', require('./routes/api/adverts'));
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

@@ -4,7 +4,7 @@
 const mongoose = require('mongoose');
 
 // local requires
-const { FillByFilters } = require('../data/advertsFinders');
+const FillByFilters = require('../data/advertsFinders/advertsFillByFilters');
 
 const advertSchema = mongoose.Schema({
     name: {
@@ -35,12 +35,12 @@ const statusEnum = {
 };
 
 // get adverts by filters
-advertSchema.statics.fillByFilters = async function (name, status, price, tag, skip, limit, sort) {
-    const filters = await FillByFilters(name, status, price, tag, skip, limit, sort);
-
-    const query = Ad.find(filters);
-    query.limit(limit);
-    query.skip(skip);
+advertSchema.methods.fillByFilters = async function (name, status, minPrice, maxPrice, tags, skip, limit, sort) {
+    const filters = await FillByFilters(name, parseInt(status), minPrice, maxPrice, tags);
+    
+    const query = Advert.find(filters);
+    query.limit(parseInt(limit));
+    query.skip(parseInt(skip));
     query.sort(sort);
     return query.exec();
 };

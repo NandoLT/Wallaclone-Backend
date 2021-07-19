@@ -7,15 +7,7 @@ const jwt = require('jsonwebtoken')
 class AuthController {
 
     /**
-     * @swagger
-     * /register:
-     *  post:
-     *      description: Register new user.
-     *      responses:
-     *          200:
-     *              description: User created.
-     *          500: 
-     *              description: Error on user creation.
+     * POST /register
      */
     async register(req, res, next) {
         try {

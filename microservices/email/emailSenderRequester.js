@@ -3,12 +3,11 @@
 const cote = require('cote');
 
 const requester = new cote.Requester({
-    name: 'Email Sender'
+    name: 'Email Sender Requester'
 });
 
-
-const thumbnailRequester = (emailData) => {
-
+const emailSenderRequester = (emailData) => {
+    
     const request = {
         type: 'Send Email',
         emailData: emailData
@@ -20,4 +19,4 @@ const thumbnailRequester = (emailData) => {
 }
 
 
-module.exports = thumbnailRequester;
+module.exports = emailSenderRequester;

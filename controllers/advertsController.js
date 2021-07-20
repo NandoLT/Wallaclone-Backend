@@ -2,6 +2,7 @@
 
 // local requires
 const { User, Advert } = require('../models');
+const emailSender = require('../microservices/email/emailSenderRequester.js')
 
 class AdvertsController {
 
@@ -70,6 +71,7 @@ class AdvertsController {
             res.status(500).json({ result: `Problems to remove product ${productId} from user ${_id}`})
         }
     }
+
 }
 
 module.exports = new AdvertsController();

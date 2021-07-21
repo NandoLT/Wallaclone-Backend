@@ -11,7 +11,6 @@ const {
     getAdverts,
     addFavorite,
     removeFavorite,
-    emailTest,
 } = require('../../controllers/advertsController')
 
 /**

@@ -61,10 +61,9 @@ class AdvertsController {
     async deleteAdvert(req, res, next) {
     
         const advert = req.params.id;
-        const adOwner = await  Advert.findOne({ _id: advert });
+        const advertOwner = await  Advert.findOne({ _id: advert });
         const authUserId = req.apiAuthUserId;
-        const { userId } = adOwner;
-        const userValidation = userVerify(adOwner.userId, authUserId );
+        const userValidation = userVerify(advertOwner.userId, authUserId );
 
         if(userValidation) {
             try {

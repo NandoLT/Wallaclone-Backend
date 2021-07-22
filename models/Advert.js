@@ -23,6 +23,10 @@ const advertSchema = mongoose.Schema({
     tags: {
         type: Array,
         index: true
+    },
+    userId: {
+        type: String,
+        index:true
     }
 });
 

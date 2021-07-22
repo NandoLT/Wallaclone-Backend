@@ -1,9 +1,10 @@
 'use strict';
 
 // local requires
+const mongoose = require('mongoose');
 const { User, Advert } = require('../models');
 const emailSender = require('../microservices/email/emailSenderRequester.js');
-const userVerify = require('../libs/userVerify.js')
+const userVerify = require('../libs/userVerify.js');
 
 class AdvertsController {
 
@@ -38,19 +39,18 @@ class AdvertsController {
 
         try {
 
-            const _id = req.params.id;
-            const advertDetail = await Advert.findOne({ _id });
-
-            if(!advertDetail) {
-                res.status(404).json( { result: 'Not found' });
+            const _id = req.params.id;  
+            if ( mongoose.isValidObjectId(_id) ) {
+                const advertDetail = await Advert.findOne({ _id });
+                res.status(200).json({ result: advertDetail });
+            } else {
+                res.status(404).json( { error: 'Not found' });
                 return;
             }
-    
-            res.status(200).json({ result: advertDetail });
 
         } catch (error) {
 
-            res.status(500).json({ error: error.message, advert: `Anuncio ${advertDetail}` });
+            res.status(500).json({ error: error.message });
 
         }
     }

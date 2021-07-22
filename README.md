@@ -3,7 +3,7 @@
 
 ### BASE URLs :
   - /api/adverts
-  - api/users
+  - /api/users
 
 ### USER OPERATIONS :
 - POST<br>
@@ -19,6 +19,8 @@
 - GET<br>
     - / (get all adverts)
         - params { name, status, minPrice, maxPrice, tags, skip, limit, sort } <b>optional</b>
+- GET<br>
+    - /:id (get advert by id)
 - POST<br>
     - /addFavorite (jwt required in header "Authorization")
         -  params { userId, productId } <b>required</b>

@@ -9,6 +9,7 @@ const router = express.Router();
 
 const {
     getAdverts,
+    getAdvert,
     addFavorite,
     removeFavorite,
 } = require('../../controllers/advertsController')
@@ -20,14 +21,20 @@ const {
 router.get('/', getAdverts);
 
 /**
+ * GET /:id
+ * Get advert by id
+ */
+router.get('/:id', getAdvert);
+
+/**
  * POST /addFavorite
  * Add favorites advert to specific user
  */
-router.post('/addFavorite', jwtAuth, addFavorite)
+router.post('/addFavorite', jwtAuth, addFavorite);
 /**
  * POST /removeFavorite
  * Remove advert from favorites to specific user
  */
-router.post('/removeFavorite', jwtAuth, removeFavorite)
+router.post('/removeFavorite', jwtAuth, removeFavorite);
 
 module.exports = router;

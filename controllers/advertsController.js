@@ -32,6 +32,30 @@ class AdvertsController {
     }
 
     /**
+     * GET /:id
+     */
+    async getAdvert(req, res, next) {
+
+        try {
+
+            const _id = req.params.id;
+            const advertDetail = await Advert.findOne({ _id });
+
+            if(!advertDetail) {
+                res.status(404).json( { result: 'Not found' });
+                return;
+            }
+    
+            res.status(200).json({ result: advertDetail });
+
+        } catch (error) {
+
+            res.status(500).json({ error: error.message, advert: `Anuncio ${advertDetail}` });
+
+        }
+    }
+
+    /**
      * POST /addFavorite
      */
     async addFavorite(req, res, next) {        

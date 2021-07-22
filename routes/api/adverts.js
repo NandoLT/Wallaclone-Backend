@@ -10,6 +10,7 @@ const router = express.Router();
 const {
     getAdverts,
     getAdvert,
+    deleteAdvert,
     addFavorite,
     removeFavorite,
 } = require('../../controllers/advertsController')
@@ -25,6 +26,13 @@ router.get('/', getAdverts);
  * Get advert by id
  */
 router.get('/:id', getAdvert);
+
+/**
+ * DELETE /delete/:id
+ * Delete advert by id
+ */
+router.delete('/delete/:id', jwtAuth, deleteAdvert);
+
 
 /**
  * POST /addFavorite

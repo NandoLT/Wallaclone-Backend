@@ -56,6 +56,31 @@ class AdvertsController {
     }
 
     /**
+     * DELETE /delete/:id
+     */
+    async deleteAdvert(req, res, next) {
+    
+        const advert = req.params.id;
+        const adOwner = await  Advert.findOne({ _id: advert });
+        const authUserId = req.apiAuthUserId;
+        const { userId } = adOwner;
+        const userValidation = userVerify(adOwner.userId, authUserId );
+
+        if(userValidation) {
+            try {
+                await Advert.deleteOne ({ _id: advert });
+                res.status(200).json({ result: `Product ${advert} deleted successfully`});
+            } catch (error) {
+                res.status(500).json({ result: message.error });
+            }
+        } else {
+            res.status(401).json({ result: 'User verification invalid' });
+        }
+
+    }
+
+
+    /**
      * POST /addFavorite
      */
     async addFavorite(req, res, next) {        

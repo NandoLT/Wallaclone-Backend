@@ -56,6 +56,27 @@ class AdvertsController {
     }
 
     /**
+     * POST /
+     */
+    async createAdvert(req, res, next) {
+        try {
+            const data = req.body;
+            const file = data.photo;
+            if (data.status > 3) {
+                res.json({ error : 'The status must be a number between 0 and 3' });
+            }
+
+            const advert = new Advert(data);
+            advert.photo = file.filename;
+
+            const newAdvert = await advert.save();
+            res.status(201).json({ result: newAdvert });
+        } catch (error) {
+            res.status(500).json({ error: error.message });
+        }
+    }
+
+    /**
      * DELETE /delete/:id
      */
     async deleteAdvert(req, res, next) {
@@ -78,7 +99,6 @@ class AdvertsController {
 
     }
 
-
     /**
      * POST /addFavorite
      */
@@ -88,7 +108,7 @@ class AdvertsController {
         const authUserId = req.apiAuthUserId;
         const userValidation = userVerify(userId, authUserId );
 
-        if( userValidation ){
+        if( userValidation ) {
             try {   
                 const _id = userId;
         

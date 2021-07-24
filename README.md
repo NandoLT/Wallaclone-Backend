@@ -9,9 +9,11 @@
 - POST<br>
     - /login
         - params { email, password } <b>required</b>
+        - response { msg: "Token Created", token: "token" }
 - POST<br>
     - /register
         - params { name, username, email, password } <b>required</b>
+        - response { msg: "User and Token Created", user: { new user }, token: "token" }
 - POST<br>
     - /logout   [ not implemented ]
 

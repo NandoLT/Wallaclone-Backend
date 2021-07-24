@@ -4,6 +4,7 @@
 const { User } = require('../models');
 const jwt = require('jsonwebtoken');
 const emailSender = require('../microservices/email/emailSenderRequester.js');
+const { Sign } = require('../libs/jwtAuth');
 
 class AuthController {
 
@@ -18,7 +19,16 @@ class AuthController {
             user.password = await user.hashPassword(user.password);
             const newUser = await user.save();
 
-            res.status(201).json({ result: newUser });
+            Sign(newUser._id, (err, jwtToken) => {
+                if (err) {
+                    res.status(500).json({ error: err.message });
+                }
+                res.json({
+                    msg: 'User and Token Created',
+                    user: newUser,
+                    token: jwtToken,       
+                })
+            });
         } catch (error) {
             res.status(500).json({ error: error.message });
         }
@@ -40,16 +50,15 @@ class AuthController {
                 return;
             }
 
-            jwt.sign({_id: userResponse._id}, process.env.JWT_SECRET, {expiresIn: '2h'}, async (err, jwtToken) => {
+            Sign(userResponse._id, (err, jwtToken) => {
                 if (err) {
-                    next(err);
-                    return;
+                    res.status(500).json({ error: err.message });
                 }
                 res.json({
                     msg: 'Token Created',
                     token: jwtToken,       
                 })
-            })
+            });
             
         } catch (error) {
             res.satus(500).json({ error: error.message });

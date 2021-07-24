@@ -1,7 +1,7 @@
 'use strict';
 
 // local requires
-const jwtAuth = require('../../libs/jwtAuth');
+const { Verify } = require('../../libs/jwtAuth');
 
 // libraries requires
 const express = require('express');
@@ -31,18 +31,18 @@ router.get('/:id', getAdvert);
  * DELETE /delete/:id
  * Delete advert by id
  */
-router.delete('/delete/:id', jwtAuth, deleteAdvert);
+router.delete('/delete/:id', Verify, deleteAdvert);
 
 
 /**
  * POST /addFavorite
  * Add favorites advert to specific user
  */
-router.post('/addFavorite', jwtAuth, addFavorite);
+router.post('/addFavorite', Verify, addFavorite);
 /**
  * POST /removeFavorite
  * Remove advert from favorites to specific user
  */
-router.post('/removeFavorite', jwtAuth, removeFavorite);
+router.post('/removeFavorite', Verify, removeFavorite);
 
 module.exports = router;

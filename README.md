@@ -26,6 +26,8 @@
 - DELETE<br>
     - /delete/:id (delte advert by id)
 - POST<br>
+    - / (jwt required in header "Authorization")
+        - params { name, status, price, tags, userId } <b>required</b> { photo }
     - /addFavorite (jwt required in header "Authorization")
         -  params { userId, productId } <b>required</b>
     - /removeFavorite (jwt required in header "Authorization")

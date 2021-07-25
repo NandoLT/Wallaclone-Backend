@@ -1,6 +1,6 @@
 ## Directorios
 /node_modules
-
+/public/images
 ## Archivos
 .env
 datos_servidor.txt

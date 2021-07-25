@@ -84,10 +84,7 @@ class AdvertsController {
         const filter = { _id: data.productId };
         const authUserId = req.apiAuthUserId;
         const userValidation = userVerify(data.userId, authUserId );
-        console.log('DATA', data);
-        console.log('filter', filter);
-        console.log('AUTHUSERID', authUserId);
-        console.log('USERVALIDATION', userValidation);
+
         if(userValidation) {
             try {
                 if (data.status > 3) {

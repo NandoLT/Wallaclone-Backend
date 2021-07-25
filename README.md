@@ -24,11 +24,14 @@
 - GET<br>
     - /:id (get advert by id)
 - DELETE<br>
-    - /delete/:id (delte advert by id)
+    - /delete/:id (delte advert by id) (jwt required in header "Authorization")
 - POST<br>
     - / (jwt required in header "Authorization")
-        - params { name, status, price, tags, userId } <b>required</b> { photo }
+        - params { name, status, price, tags, userId } <b>required</b> { photo } <b>optional</b>
     - /addFavorite (jwt required in header "Authorization")
         -  params { userId, productId } <b>required</b>
     - /removeFavorite (jwt required in header "Authorization")
         -  params { userId, productId } <b>required</b>
+- PUT<br>
+    - /updateAdvert (jwt required in header "Authorization")
+        -  params { name, status, price, tags, userId } <b> required </b> { photo } <b>optional</b>

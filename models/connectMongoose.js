@@ -15,7 +15,8 @@ mongoose.connection.once('open', () => {
 mongoose.connect(process.env.MONGODB_URL_CONNECT, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
-  useCreateIndex: true
+  useCreateIndex: true,
+  useFindAndModify: false
 });
 
 module.exports = mongoose.connection;

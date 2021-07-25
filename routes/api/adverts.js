@@ -12,6 +12,7 @@ const {
     getAdverts,
     getAdvert,
     createAdvert,
+    updateAdvert,
     deleteAdvert,
     addFavorite,
     removeFavorite,
@@ -46,6 +47,11 @@ router.get('/:id', getAdvert);
  */
 router.post('/', Verify, upload.single('photo'), createAdvert);
 
+/**
+ * PUT /updateAdvert
+ * Update Advert Passing id
+ */
+router.put('/updateAdvert', Verify, updateAdvert);
 
 /**
  * DELETE /delete/:id

@@ -77,6 +77,39 @@ class AdvertsController {
     }
 
     /**
+     * PUT /updateAdvert
+     */
+    async updateAdvert(req, res, next) {
+        const data = req.body;
+        const filter = { _id: data.productId };
+        const authUserId = req.apiAuthUserId;
+        const userValidation = userVerify(data.userId, authUserId );
+        console.log('DATA', data);
+        console.log('filter', filter);
+        console.log('AUTHUSERID', authUserId);
+        console.log('USERVALIDATION', userValidation);
+        if(userValidation) {
+            try {
+                if (data.status > 3) {
+                    res.json({ error : 'The status must be a number between 0 and 3' });
+                }
+        
+                const updatedAdvert = await Advert.findOneAndUpdate(filter, data, {
+                    new: true
+                });
+    
+                res.status(201).json({ result: updatedAdvert });
+            } catch (error) {
+                res.status(500).json({ error: error.message });
+            }
+        } else {
+            res.status(401).json({ result: 'User verification invalid' });
+        }
+
+        
+    }
+
+    /**
      * DELETE /delete/:id
      */
     async deleteAdvert(req, res, next) {

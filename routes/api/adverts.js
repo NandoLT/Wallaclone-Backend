@@ -4,6 +4,7 @@
 const { Verify } = require('../../libs/jwtAuth');
 
 // libraries requires
+const path = require('path');
 const express = require('express');
 const router = express.Router();
 var multer  = require('multer');
@@ -20,7 +21,7 @@ const {
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, path.join(__dirname, '..', '..', 'public', 'images'))
+    cb(null, path.join(__dirname, '..', '..', 'public', 'images')) // RUTA_IMAGES para .env
   },
   filename: function (req, file, cb) {
     cb(null, file.originalname)

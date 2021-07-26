@@ -61,19 +61,22 @@ class AdvertsController {
     async createAdvert(req, res, next) {
         try {
             const data = req.body;
-            const file = data.photo;
+            const file = req.file;
+
             if (data.status > 3) {
                 res.json({ error : 'The status must be a number between 0 and 3' });
             }
 
             const advert = new Advert(data);
 
-            if (file) 
-                advert.photo = file.filename;
+            if (file) {
+                advert.photo = file.originalname;
+            }
 
             const newAdvert = await advert.save();
             res.status(201).json({ result: newAdvert });
         } catch (error) {
+            console.log('ERROR', error);
             res.status(500).json({ error: error.message });
         }
     }

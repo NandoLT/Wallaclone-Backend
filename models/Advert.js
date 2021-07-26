@@ -11,6 +11,7 @@ const advertSchema = mongoose.Schema({
         type: String,
         index: true
     },
+    description: String,
     status: {
         type: Number,
         index: true
@@ -19,6 +20,7 @@ const advertSchema = mongoose.Schema({
         type: Number,
         index: true
     },
+    province: String,
     photo: String,
     tags: {
         type: Array,

@@ -67,7 +67,9 @@ class AdvertsController {
             }
 
             const advert = new Advert(data);
-            advert.photo = file.filename;
+
+            if (file) 
+                advert.photo = file.filename;
 
             const newAdvert = await advert.save();
             res.status(201).json({ result: newAdvert });

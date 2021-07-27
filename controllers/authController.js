@@ -16,15 +16,10 @@ class AuthController {
             const data = req.body;
             const { email, username } = data;
             
-            if(User.findOne({ email: email})){
-                console.log('EMAIL YA EXISTE');
-                const error = new Error;('Email already exist');
-                res.json({ error: error});
-                return;
-            } else if(User.findOne({ username: username })) {
-                console.log('USUARIO YA EXISTE');
-                const error = new Error;('Username already exist');
-                res.json({ error: error});
+            if((User.findOne({ email: email})) || (User.findOne({ username: username }))) {
+                console.log('EMAI/USUARIO YA EXISTE');
+                const error = new Error;('Email or Username already exist');
+                res.json({ error: error.message});
                 return;
             } else {
                 const user = new User(data);

@@ -105,7 +105,7 @@ class AdvertsController {
                 res.status(500).json({ error: error.message });
             }
         } else {
-            res.status(401).json({ result: 'User verification invalid' });
+            res.status(401).json({ error: 'User verification invalid' });
         }
 
         

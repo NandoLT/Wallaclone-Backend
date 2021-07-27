@@ -14,9 +14,9 @@ class AuthController {
     async register(req, res, next) {
         try {
             const data = req.body;
-            const { email, username } = data;
+            const { email, surname } = data;
             
-            if((User.findOne({ email: email})) || (User.findOne({ username: username }))) {
+            if((User.findOne({ email: email})) || (User.findOne({ surname: surname }))) {
                 console.log('EMAI/USUARIO YA EXISTE');
                 const error = new Error;('Email or Username already exist');
                 res.json({ error: error.message});

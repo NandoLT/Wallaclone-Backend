@@ -14,21 +14,35 @@ class AuthController {
     async register(req, res, next) {
         try {
             const data = req.body;
-            const user = new User(data);
+            const { email, username } = data;
             
-            user.password = await user.hashPassword(user.password);
-            const newUser = await user.save();
-
-            Sign(newUser._id, (err, jwtToken) => {
-                if (err) {
-                    res.status(500).json({ error: err.message });
-                }
-                res.json({
-                    msg: 'User and Token Created',
-                    user: newUser,
-                    token: jwtToken,       
-                })
-            });
+            if(User.findOne({ email: email})){
+                console.log('EMAIL YA EXISTE');
+                const error = new Error;('Email already exist');
+                res.json({ error: error});
+                return;
+            } else if(User.findOne({ username: username })) {
+                console.log('USUARIO YA EXISTE');
+                const error = new Error;('Username already exist');
+                res.json({ error: error});
+                return;
+            } else {
+                const user = new User(data);
+                
+                user.password = await user.hashPassword(user.password);
+                const newUser = await user.save();
+    
+                Sign(newUser._id, (err, jwtToken) => {
+                    if (err) {
+                        res.status(500).json({ error: err.message });
+                    }
+                    res.json({
+                        msg: 'User and Token Created',
+                        user: newUser,
+                        token: jwtToken,       
+                    })
+                });
+            }
         } catch (error) {
             res.status(500).json({ error: error.message });
         }

@@ -18,9 +18,8 @@ class AuthController {
             
             if((User.findOne({ email: email})) || (User.findOne({ surname: surname }))) {
                 console.log('EMAI/USUARIO YA EXISTE');
-                const error = new Error;('Email or Username already exist');
+                const error = new Error('Email or Username already exist');
                 res.json({ error: error.message});
-                return;
             } else {
                 const user = new User(data);
                 

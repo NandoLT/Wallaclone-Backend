@@ -59,24 +59,32 @@ class AdvertsController {
      * POST /
      */
     async createAdvert(req, res, next) {
-        try {
-            const data = req.body;
-            const file = req.file;
+        
+        const data = req.body;
+        const authUserId = req.apiAuthUserId;
+        const userValidation = userVerify(data.userId, authUserId ); 
 
-            if (data.status > 3) {
-                res.json({ message : 'The status must be a number between 0 and 3' });
+        if(userValidation) {
+            try {
+                const file = req.file;
+    
+                if (data.status > 3) {
+                    res.json({ message : 'The status must be a number between 0 and 3' });
+                }
+    
+                const advert = new Advert(data);
+    
+                if (file) {
+                    advert.photo = file.originalname;
+                }
+    
+                const newAdvert = await advert.save();
+                res.status(201).json({ result: newAdvert });
+            } catch (error) {
+                res.status(500).json({ message: error.message });
             }
-
-            const advert = new Advert(data);
-
-            if (file) {
-                advert.photo = file.originalname;
-            }
-
-            const newAdvert = await advert.save();
-            res.status(201).json({ result: newAdvert });
-        } catch (error) {
-            res.status(500).json({ message: error.message });
+        } else {
+            res.status(401).json({ message: 'User verification invalid' });
         }
     }
 
@@ -87,7 +95,10 @@ class AdvertsController {
         const data = req.body;
         const filter = { _id: data.productId };
         const authUserId = req.apiAuthUserId;
-        const userValidation = userVerify(data.userId, authUserId );
+
+        const { userId } = await Advert.findById({ _id: filter });
+
+        const userValidation = userVerify(userId, authUserId );
 
         if(userValidation) {
             try {
@@ -106,8 +117,6 @@ class AdvertsController {
         } else {
             res.status(401).json({ message: 'User verification invalid' });
         }
-
-        
     }
 
     /**
@@ -116,9 +125,9 @@ class AdvertsController {
     async deleteAdvert(req, res, next) {
     
         const advert = req.params.id;
-        const advertOwner = await  Advert.findOne({ _id: advert });
+        const { userId } = await  Advert.findOne({ _id: advert });
         const authUserId = req.apiAuthUserId;
-        const userValidation = userVerify(advertOwner.userId, authUserId );
+        const userValidation = userVerify(userId, authUserId);
 
         if(userValidation) {
             try {

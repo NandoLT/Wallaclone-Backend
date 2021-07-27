@@ -18,7 +18,8 @@ class AuthController {
             
             if((User.findOne({ email })) || (User.findOne({ name }))) {
                 const error = new Error('Email or Username already exist');
-                res.json({ error: error.message});
+                res.status(500).json({ message: error.message});
+                return;
             } else {
                 const user = new User(data);
                 
@@ -27,7 +28,7 @@ class AuthController {
     
                 Sign(newUser._id, (err, jwtToken) => {
                     if (err) {
-                        res.status(500).json({ error: err.message });
+                        res.status(500).json({ message: err.message });
                     }
                     res.json({
                         msg: 'User and Token Created',
@@ -37,7 +38,7 @@ class AuthController {
                 });
             }
         } catch (error) {
-            res.status(500).json({ error: error.message });
+            res.status(500).json({ message: error.message });
         }
     }
 
@@ -53,13 +54,13 @@ class AuthController {
             if(!userResponse || !(await userResponse.comparePassword(password))) {
                 const error= new Error('Invalid Credentials');
                 error.status = 401;
-                res.status(error.status).json({ error: error.message });
+                res.status(error.status).json({ message: error.message });
                 return;
             }
 
             Sign(userResponse._id, (err, jwtToken) => {
                 if (err) {
-                    res.status(500).json({ error: err.message });
+                    res.status(500).json({ message: err.message });
                 }
                 res.json({
                     msg: 'Token Created',
@@ -68,7 +69,7 @@ class AuthController {
             });
             
         } catch (error) {
-            res.satus(500).json({ error: error.message });
+            res.satus(500).json({ message: error.message });
         }
     }
 
@@ -82,7 +83,7 @@ class AuthController {
             res.status(200).json({ result: true });
         }
         catch (error) {
-            res.status(500).json({ error: error.message });
+            res.status(500).json({ message: error.message });
         }
     }
 }

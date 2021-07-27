@@ -28,7 +28,7 @@ class AdvertsController {
             const result = await advert.fillByFilters(name, status, minPrice, maxPrice, tags, skip, limit, sort);
             res.status(200).json({ result });
         } catch (error) {
-            res.status(500).json({ error: error.message });
+            res.status(500).json({ message: error.message });
         }
     }
 
@@ -44,13 +44,13 @@ class AdvertsController {
                 const advertDetail = await Advert.findOne({ _id });
                 res.status(200).json({ result: advertDetail });
             } else {
-                res.status(404).json( { error: 'Not found' });
+                res.status(404).json( { message: 'Not found' });
                 return;
             }
 
         } catch (error) {
 
-            res.status(500).json({ error: error.message });
+            res.status(500).json({ message: error.message });
 
         }
     }
@@ -64,7 +64,7 @@ class AdvertsController {
             const file = req.file;
 
             if (data.status > 3) {
-                res.json({ error : 'The status must be a number between 0 and 3' });
+                res.json({ message : 'The status must be a number between 0 and 3' });
             }
 
             const advert = new Advert(data);
@@ -76,8 +76,7 @@ class AdvertsController {
             const newAdvert = await advert.save();
             res.status(201).json({ result: newAdvert });
         } catch (error) {
-            console.log('ERROR', error);
-            res.status(500).json({ error: error.message });
+            res.status(500).json({ message: error.message });
         }
     }
 
@@ -93,7 +92,7 @@ class AdvertsController {
         if(userValidation) {
             try {
                 if (data.status > 3) {
-                    res.json({ error : 'The status must be a number between 0 and 3' });
+                    res.json({ message : 'The status must be a number between 0 and 3' });
                 }
         
                 const updatedAdvert = await Advert.findOneAndUpdate(filter, data, {
@@ -102,10 +101,10 @@ class AdvertsController {
     
                 res.status(201).json({ result: updatedAdvert });
             } catch (error) {
-                res.status(500).json({ error: error.message });
+                res.status(500).json({ message: error.message });
             }
         } else {
-            res.status(401).json({ error: 'User verification invalid' });
+            res.status(401).json({ message: 'User verification invalid' });
         }
 
         
@@ -126,10 +125,10 @@ class AdvertsController {
                 await Advert.deleteOne ({ _id: advert });
                 res.status(200).json({ result: `Product ${advert} deleted successfully`});
             } catch (error) {
-                res.status(500).json({ result: message.error });
+                res.status(500).json({ message: message.error });
             }
         } else {
-            res.status(401).json({ result: 'User verification invalid' });
+            res.status(401).json({ message: 'User verification invalid' });
         }
 
     }
@@ -154,10 +153,10 @@ class AdvertsController {
                 res.status(201).json({ result: `${productId} add to ${_id}` });
                 
             } catch (error) {            
-                res.status(500).json({ result: `Problems to add product ${productId} in user ${_id}`})
+                res.status(500).json({ message: `Problems to add product ${productId} in user ${_id}`})
             }
         } else {
-            res.status(401).json({ result: 'User verification invalid' });
+            res.status(401).json({ message: 'User verification invalid' });
         }
     }
 
@@ -185,10 +184,10 @@ class AdvertsController {
                 res.status(200).json({ result: `${productId} remove from ${_id}` })
                 
             } catch (error) {
-                res.status(500).json({ result: `Problems to remove product ${productId} from user ${_id}`})
+                res.status(500).json({ message: `Problems to remove product ${productId} from user ${_id}`})
             }
         } else {
-            res.status(401).json({ result: 'User verification invalid' });
+            res.status(401).json({ message: 'User verification invalid' });
         }
     }
 

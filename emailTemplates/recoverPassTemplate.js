@@ -6,6 +6,6 @@ module.exports = (user, token) => {
         <p>This is the process to recover your password:</p>
         <br />
         <p>Please, click on given link to reset your password:</p>
-        <p>http://localhost:4000/api/users/resetpassword/${token}</p>
+        <p>http://18.188.214.80/api/users/resetpassword/${token}</p>
     </div>`);
 }

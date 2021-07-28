@@ -4,11 +4,15 @@
 const express = require('express');
 const router = express.Router();
 
+// local requires
+const { Verify } = require('../../libs/jwtAuth');
+
 const {
     register,
     login,
     logout,
-    recoverPassword
+    recoverPassword,
+    resetPassword
 } = require('../../controllers/authController');
 
 /**
@@ -33,5 +37,10 @@ router.post('/logout', logout);
  * POST /recoverpassword
  */
 router.post('/recoverpassword', recoverPassword);
+
+/**
+ * POST /recoverpassword
+ */
+router.post('/resetpassword', Verify, resetPassword);
 
 module.exports = router;

@@ -128,9 +128,18 @@ class AuthController {
     async resetPassword(req, res, next) {
         try {
             const { newPassword, confirmNewPassword } = req.body;
-            const id = 1; // sacar del jwtToken de la url
 
-            
+            if (newPassword !== confirmNewPassword) {
+                res.status(500).json({ message: "The passwords doesn't match" });
+                return;
+            }
+
+            const _id = req.apiAuthUserId;
+            const user = await User.find({ _id });
+
+            user.password = newPassword;
+            user.save();
+            res.status(200).json({ result: true });
 
         } catch (error) {
             res.status(500).json({ message: error.message });

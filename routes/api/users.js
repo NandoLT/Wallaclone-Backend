@@ -8,6 +8,7 @@ const {
     register,
     login,
     logout,
+    recoverPassword
 } = require('../../controllers/authController');
 
 /**
@@ -15,15 +16,22 @@ const {
  * register new user
  */
 router.post('/register', register);
+
 /**
  * POST /login
  * user login
  */
 router.post('/login', login);
+
 /**
  * POST /logout
  * user logout
  */
 router.post('/logout', logout);
+
+/**
+ * POST /recoverpassword
+ */
+router.post('/recoverpassword', recoverPassword);
 
 module.exports = router;

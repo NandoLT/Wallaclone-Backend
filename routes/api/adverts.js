@@ -7,7 +7,8 @@ const { Verify } = require('../../libs/jwtAuth');
 const path = require('path');
 const express = require('express');
 const router = express.Router();
-var multer  = require('multer');
+// var multer  = require('multer');
+const upload = require('../../libs/awsS3.js');
 
 const {
     getAdverts,
@@ -19,16 +20,16 @@ const {
     removeFavorite,
 } = require('../../controllers/advertsController')
 
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, path.join(__dirname, '..', '..', 'public', 'images')) // RUTA_IMAGES para .env
-  },
-  filename: function (req, file, cb) {
-    cb(null, file.originalname)
-  }
-})
+// const storage = multer.diskStorage({
+//   destination: function (req, file, cb) {
+//     cb(null, path.join(__dirname, '..', '..', 'public', 'images')) // RUTA_IMAGES para .env
+//   },
+//   filename: function (req, file, cb) {
+//     cb(null, file.originalname)
+//   }
+// })
 
-const upload = multer({ storage: storage });
+// const upload = multer({ storage: storage });
 
 /**
  * GET /

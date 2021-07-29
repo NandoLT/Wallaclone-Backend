@@ -59,15 +59,16 @@ class AdvertsController {
      * POST /
      */
     async createAdvert(req, res, next) {
-        
+        console.log('ENTRO EN ENDPOINT');
         const data = req.body;
+        console.log('DATA', data);
         const authUserId = req.apiAuthUserId;
         const userValidation = userVerify(data.userId, authUserId ); 
-
+        console.log('USER VALIDATION', userValidation);
         if(userValidation) {
             try {
                 const file = req.file;
-    
+                console.log('FILE', file);
                 if (data.status > 3) {
                     res.json({ message : 'The status must be a number between 0 and 3' });
                 }

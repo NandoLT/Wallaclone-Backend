@@ -5,6 +5,7 @@ const mongoose = require('mongoose');
 const { User, Advert } = require('../models');
 const emailSender = require('../microservices/email/emailSenderRequester.js');
 const userVerify = require('../libs/userVerify.js');
+const { uploadImage, deleteMultipleImages, deleteSingleImage } = require('../libs/awsS3');
 
 class AdvertsController {
 
@@ -59,16 +60,17 @@ class AdvertsController {
      * POST /
      */
     async createAdvert(req, res, next) {
-        console.log('ENTRO EN ENDPOINT');
         const data = req.body;
-        console.log('DATA', data);
+        console.log('DATA', req);
         const authUserId = req.apiAuthUserId;
+        console.log('DATOSUSUARIO',data.userId);
+        console.log('DATOSUSUARIO', authUserId);
         const userValidation = userVerify(data.userId, authUserId ); 
-        console.log('USER VALIDATION', userValidation);
+        
         if(userValidation) {
             try {
                 const file = req.file;
-                console.log('FILE', file);
+                
                 if (data.status > 3) {
                     res.json({ message : 'The status must be a number between 0 and 3' });
                 }

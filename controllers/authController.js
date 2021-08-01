@@ -5,6 +5,7 @@ const { User } = require('../models');
 const jwt = require('jsonwebtoken');
 const emailSender = require('../microservices/email/emailSenderRequester.js');
 const { Sign } = require('../libs/jwtAuth');
+const { createUserFolder } = require('../libs/awsS3')
 
 class AuthController {
 
@@ -15,8 +16,10 @@ class AuthController {
         try {
             const data = req.body;
             const { email, name } = data;
-            
-            if((User.findOne({ email })) || (User.findOne({ name }))) {
+            const usermail = await User.findOne({ email });
+            const username = await User.findOne({ name });
+
+            if(!!usermail || !!username) {
                 const error = new Error('Email or Username already exist');
                 res.status(500).json({ message: error.message});
                 return;
@@ -25,7 +28,9 @@ class AuthController {
                 
                 user.password = await user.hashPassword(user.password);
                 const newUser = await user.save();
-    
+                
+                createUserFolder(newUser._id);
+
                 Sign(newUser._id, (err, jwtToken) => {
                     if (err) {
                         res.status(500).json({ message: err.message });

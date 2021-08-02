@@ -40,13 +40,11 @@ const createUserFolder = async (userId) => {
 
 
 const deleteSingleImage = async (bucketName, key) => {
-    console.log('ENTRO EN DELETE AWS');
+
     const bucketParams = {
         Bucket: bucketName,
         key
     };
-    console.log('BUCKETPARAMS', bucketParams);
-    // await s3.deleteObject(bucketParams);
 
     s3.deleteObject({
         Bucket: bucketName,

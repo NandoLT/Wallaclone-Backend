@@ -15,19 +15,14 @@ const s3 = new aws.S3();
 
 const storage = multerS3({
     s3: s3,
-    // bucket: process.env.AWS_S3_BUCKET,
     bucket: (req, res, cb) => {
-        // cb(null, `${req.body.bucketName}/${req.body.userId}`);
         cb(null, `${process.env.AWS_S3_BUCKET}/${req.body.userId}`);
-        // cb(null, `${process.env.AWS_S3_BUCKET}`);
     },
     acl: 'public-read',
     contentType: (req, file, cb) => {
-        // console.log(file.mimetype);
         cb(null, file.mimetype);
     },
     key: function (req, file, cb) {
-        // console.log(file);
         cb(null, file.originalname);
     }
 });
@@ -39,15 +34,38 @@ const createUserFolder = async (userId) => {
         Bucket: process.env.AWS_S3_BUCKET
         },(err, data) => {
             console.log('ERROR S3', err);
-            console.log('DATA S3', data);
+            // console.log('DATA S3', data);
         });
 };
 
 
-const deleteSingleImage = () => {
+const deleteSingleImage = async (bucketName, key) => {
+    console.log('ENTRO EN DELETE AWS');
+    const bucketParams = {
+        Bucket: bucketName,
+        key
+    };
+    console.log('BUCKETPARAMS', bucketParams);
+    // await s3.deleteObject(bucketParams);
+
+    s3.deleteObject({
+        Bucket: bucketName,
+        Key: key
+      }, function(err, data) {
+        if (err) {
+            console.log("Error: " + err);
+        }
+        else {
+            console.log('Successfully deleted the item');
+         return;
+        }
+      });
+ 
+
 };
 
 const deleteMultipleImages = () => {
+    //Implementar si en front se opta por tener galeria de producto.
 };
 
 module.exports = {upload, createUserFolder, deleteSingleImage, deleteMultipleImages}; 

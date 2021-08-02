@@ -1,11 +1,12 @@
 'use strict';
 
 // local requires
+require('dotenv');
 const mongoose = require('mongoose');
 const { User, Advert } = require('../models');
 const emailSender = require('../microservices/email/emailSenderRequester.js');
 const userVerify = require('../libs/userVerify.js');
-const { uploadImage, deleteMultipleImages, deleteSingleImage } = require('../libs/awsS3');
+const { deleteMultipleImages, deleteSingleImage } = require('../libs/awsS3');
 
 class AdvertsController {
 
@@ -62,15 +63,13 @@ class AdvertsController {
     async createAdvert(req, res, next) {
         const data = req.body;
         console.log('DATA', req);
-        const authUserId = req.apiAuthUserId;
-        console.log('DATOSUSUARIO',data.userId);
-        console.log('DATOSUSUARIO', authUserId);
+        const authUserId = req.apiAuthUserId
         const userValidation = userVerify(data.userId, authUserId ); 
         
         if(userValidation) {
             try {
                 const file = req.file;
-                
+                console.log('FILE', file);
                 if (data.status > 3) {
                     res.json({ message : 'The status must be a number between 0 and 3' });
                 }
@@ -78,7 +77,8 @@ class AdvertsController {
                 const advert = new Advert(data);
     
                 if (file) {
-                    advert.photo = file.originalname;
+                    console.log('ORIGINAL NAME', file.originalname)
+                    advert.photo.push(file.originalname);
                 }
     
                 const newAdvert = await advert.save();
@@ -137,11 +137,41 @@ class AdvertsController {
                 await Advert.deleteOne ({ _id: advert });
                 res.status(200).json({ result: `Product ${advert} deleted successfully`});
             } catch (error) {
-                res.status(500).json({ message: message.error });
+                res.status(500).json({ message: error.message });
             }
         } else {
             res.status(401).json({ message: 'User verification invalid' });
         }
+
+    }
+
+    /**
+     * DELETE /deleteImage/:advertId/:imageName
+     */
+    async deleteImage(req, res, next){
+        const _id = req.params.advertId;
+        const imageName = req.params.imageName;
+
+        const imageAdvert = await Advert.findById({ _id });
+
+        const authUserId = req.apiAuthUserId;
+        const userValidation = userVerify(imageAdvert.userId, authUserId);
+
+        if (userValidation) {
+            try {
+                imageAdvert.photo.pop();
+                imageAdvert.save();
+
+                await deleteSingleImage(`${process.env.AWS_S3_BUCKET}`, `${_id}/${imageName}`);
+
+                res.json({ result: 'Image deleted succesfuly' });
+            } catch (error) {
+                res.status(500).json({ message: error.message });
+            }
+        } else {
+            res.status(401).json({ message: 'User verification invalid' });
+        }
+
 
     }
 

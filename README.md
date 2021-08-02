@@ -21,10 +21,10 @@
 - GET<br>
     - / (get all adverts)
         - params { name, status, minPrice, maxPrice, tags, skip, limit, sort } <b>optional</b>
-- GET<br>
     - /:id (get advert by id)
 - DELETE<br>
-    - /delete/:id (delte advert by id) (jwt required in header "Authorization")
+    - /delete/:id (delete advert by id) (jwt required in header "Authorization")
+    - /deleteImage/:advertId/:imageName (delete single image) (jwt required in header "Authorization")
 - POST<br>
     - / (jwt required in header "Authorization")
         - params { name, status, price, tags, userId } <b>required</b> { photo } <b>optional</b>

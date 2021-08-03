@@ -61,7 +61,7 @@ router.delete('/deleteImage/:advertId/:imageName', Verify, deleteImage);
  * GET /getFavorites
  * Get favorites adverts by userId
  */
-router.get('/getFavorites', Verify, getFavorites);
+router.post('/getFavorites', Verify, getFavorites);
 
 /**
  * POST /addFavorite

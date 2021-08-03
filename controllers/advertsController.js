@@ -193,19 +193,19 @@ class AdvertsController {
      */
     async addFavorite(req, res, next) {        
 
-        const { productId } = req.body;
+        const { advertId } = req.body;
         const authUserId = req.apiAuthUserId;
 
         try {   
             const _id = authUserId;
     
             const userToFavorite = await User.findOne({ _id });
-            userToFavorite.favorites.push(productId);
+            userToFavorite.favorites.push(advertId);
             await userToFavorite.save();
     
-            res.status(200).json({ result: `${productId} add to ${_id}` });            
+            res.status(200).json({ result: `${advertId} add to ${_id}` });            
         } catch (error) {            
-            res.status(500).json({ message: `Problems to add product ${productId} in user ${_id}`})
+            res.status(500).json({ message: `Problems to add product ${advertId} in user ${_id}`})
         }
     }
 
@@ -215,23 +215,23 @@ class AdvertsController {
      */
     async removeFavorite(req, res, next) {  
 
-        const { productId } = req.body;
+        const { advertId } = req.body;
         const authUserId = req.apiAuthUserId;
 
         try {
             const _id = authUserId;
 
             const removeFromFavorites = await User.findOne({ _id });
-            const index = removeFromFavorites.favorites.indexOf(productId);
+            const index = removeFromFavorites.favorites.indexOf(advertId);
             if (index > -1) {
                 removeFromFavorites.favorites.splice(index, 1);
             }
 
             await removeFromFavorites.save();
 
-            res.status(200).json({ result: `${productId} remove from ${_id}` })            
+            res.status(200).json({ result: `${advertId} remove from ${_id}` })            
         } catch (error) {
-            res.status(500).json({ message: `Problems to remove product ${productId} from user ${_id}`})
+            res.status(500).json({ message: `Problems to remove product ${advertId} from user ${_id}`})
         }
     }
 }

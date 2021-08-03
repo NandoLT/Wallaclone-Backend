@@ -16,6 +16,7 @@ const {
     updateAdvert,
     deleteAdvert,
     deleteImage,
+    getFavorites,
     addFavorite,
     removeFavorite,
 } = require('../../controllers/advertsController')
@@ -55,6 +56,12 @@ router.delete('/delete/:id', Verify, deleteAdvert);
  * Delete single image
  */
 router.delete('/deleteImage/:advertId/:imageName', Verify, deleteImage);
+
+/**
+ * GET /getFavorites
+ * Get favorites adverts by userId
+ */
+router.get('/getFavorites', Verify, getFavorites);
 
 /**
  * POST /addFavorite

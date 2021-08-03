@@ -176,29 +176,36 @@ class AdvertsController {
     }
 
     /**
+     * GET /getFavorites
+     */
+    async getFavorites(req, res, next) {
+        const _id = req.apiAuthUserId;
+        try {
+            const user = await User.findOne({ _id });
+            res.json({ result: user.favorites });
+        } catch (error) {
+            res.status(500).json({ message: error.message });
+        }
+    }
+
+    /**
      * POST /addFavorite
      */
     async addFavorite(req, res, next) {        
 
-        const { userId, productId } = req.body;
+        const { productId } = req.body;
         const authUserId = req.apiAuthUserId;
-        const userValidation = userVerify(userId, authUserId );
 
-        if( userValidation ) {
-            try {   
-                const _id = userId;
-        
-                const userToFavorite = await User.findOne({ _id });
-                userToFavorite.favorites.push(productId);
-                await userToFavorite.save();
-        
-                res.status(201).json({ result: `${productId} add to ${_id}` });
-                
-            } catch (error) {            
-                res.status(500).json({ message: `Problems to add product ${productId} in user ${_id}`})
-            }
-        } else {
-            res.status(401).json({ message: 'User verification invalid' });
+        try {   
+            const _id = authUserId;
+    
+            const userToFavorite = await User.findOne({ _id });
+            userToFavorite.favorites.push(productId);
+            await userToFavorite.save();
+    
+            res.status(200).json({ result: `${productId} add to ${_id}` });            
+        } catch (error) {            
+            res.status(500).json({ message: `Problems to add product ${productId} in user ${_id}`})
         }
     }
 
@@ -208,31 +215,25 @@ class AdvertsController {
      */
     async removeFavorite(req, res, next) {  
 
-        const { userId, productId } = req.body;
+        const { productId } = req.body;
         const authUserId = req.apiAuthUserId;
-        const userValidation = userVerify(userId, authUserId );
 
-        if(userValidation) {
-            try {
-                const _id = userId;
-    
-                const removeFromFavorites = await User.findOne({ _id });
-                const index = removeFromFavorites.favorites.indexOf(productId);
-                if (index > -1) {
-                    removeFromFavorites.favorites.splice(index, 1);
-                }
-                await removeFromFavorites.save();
-    
-                res.status(200).json({ result: `${productId} remove from ${_id}` })
-                
-            } catch (error) {
-                res.status(500).json({ message: `Problems to remove product ${productId} from user ${_id}`})
+        try {
+            const _id = authUserId;
+
+            const removeFromFavorites = await User.findOne({ _id });
+            const index = removeFromFavorites.favorites.indexOf(productId);
+            if (index > -1) {
+                removeFromFavorites.favorites.splice(index, 1);
             }
-        } else {
-            res.status(401).json({ message: 'User verification invalid' });
+
+            await removeFromFavorites.save();
+
+            res.status(200).json({ result: `${productId} remove from ${_id}` })            
+        } catch (error) {
+            res.status(500).json({ message: `Problems to remove product ${productId} from user ${_id}`})
         }
     }
-
 }
 
 module.exports = new AdvertsController();

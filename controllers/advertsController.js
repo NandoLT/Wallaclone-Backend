@@ -115,11 +115,13 @@ class AdvertsController {
                 });
 
                 if(( updatedAdvert.status === 3 || updatedAdvert.status === 2) && (data.satus !== updatedAdvert.status)) {
-                    changeInAdvert(data.productId, 'status' )
+                    console.log('STATUS CHANGE');
+                    changeInAdvert(updatedAdvert, 'status' );
                 }
-
+                
                 if(updatedAdvert.price !== data.price) {
-                    changeInAdvert(data.productId, 'price' )
+                    console.log('PRICE CHANGE');
+                    changeInAdvert(updatedAdvert, 'price' );
                 }
     
                 res.status(201).json({ result: updatedAdvert });

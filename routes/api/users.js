@@ -4,11 +4,18 @@
 const express = require('express');
 const router = express.Router();
 
+// local requires
+const { Verify } = require('../../libs/jwtAuth');
+
 const {
     register,
     login,
     logout,
 } = require('../../controllers/authController');
+
+const {
+    deleteUser
+} = require('../../controllers/usersControllers');
 
 /**
  * POST /register
@@ -25,5 +32,11 @@ router.post('/login', login);
  * user logout
  */
 router.post('/logout', logout);
+
+/**
+ * DELETE /deleteuser/:userid
+ * delete user by id
+ */
+router.delete('/deleteuser', Verify, deleteUser);
 
 module.exports = router;

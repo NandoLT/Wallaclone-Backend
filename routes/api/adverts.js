@@ -5,7 +5,6 @@ const { Verify } = require('../../libs/jwtAuth');
 const { upload } = require('../../libs/awsS3');
 
 // libraries requires
-const path = require('path');
 const express = require('express');
 const router = express.Router();
 

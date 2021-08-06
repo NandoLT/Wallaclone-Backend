@@ -14,7 +14,9 @@ const {
 } = require('../../controllers/authController');
 
 const {
-    deleteUser
+    getUser,
+    deleteUser,
+    updateUser
 } = require('../../controllers/usersControllers');
 
 /**
@@ -34,9 +36,20 @@ router.post('/login', login);
 router.post('/logout', logout);
 
 /**
+ * GET /username
+ */
+router.get('/:username', getUser);
+
+/**
  * DELETE /deleteuser/:userid
  * delete user by id
  */
 router.delete('/deleteuser', Verify, deleteUser);
+
+/**
+ * PUT /updateUser
+ * update user info
+ */
+router.put('/updateUser', Verify, updateUser);
 
 module.exports = router;

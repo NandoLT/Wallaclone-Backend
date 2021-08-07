@@ -24,11 +24,13 @@ const {
  * register new user
  */
 router.post('/register', register);
+
 /**
  * POST /login
  * user login
  */
 router.post('/login', login);
+
 /**
  * POST /logout
  * user logout
@@ -38,7 +40,7 @@ router.post('/logout', logout);
 /**
  * GET /username
  */
-router.get('/:username', getUser);
+router.get('/:username', Verify, getUser);
 
 /**
  * DELETE /deleteuser/:userid
@@ -50,6 +52,6 @@ router.delete('/deleteuser', Verify, deleteUser);
  * PUT /updateUser
  * update user info
  */
-router.put('/updateUser', Verify, updateUser);
+router.put('/updateuser', Verify, updateUser);
 
 module.exports = router;

@@ -27,7 +27,11 @@ const storage = multerS3({
     }
 });
 
-const upload = multer({ storage: storage });
+const upload = multer({ 
+    storage: storage,
+    limits : {fileSize : 1000000},
+}).single('photo');
+
 const createUserFolder = async (userId) => {
     await s3.putObject({
         Key:`${userId}/`,
@@ -40,7 +44,6 @@ const createUserFolder = async (userId) => {
 
 
 const deleteSingleImage = async (bucketName, key) => {
-
     const bucketParams = {
         Bucket: bucketName,
         key
@@ -58,8 +61,6 @@ const deleteSingleImage = async (bucketName, key) => {
          return;
         }
       });
- 
-
 };
 
 const deleteMultipleImages = () => {

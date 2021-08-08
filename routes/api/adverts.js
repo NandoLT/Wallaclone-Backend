@@ -36,13 +36,13 @@ router.get('/:id', getAdvert);
  * POST
  * Create advert
  */
-router.post('/', Verify, upload.single('photo'), createAdvert);
+router.post('/', Verify, upload, createAdvert);
 
 /**
  * PUT /updateAdvert
  * Update Advert Passing id
  */
-router.put('/updateAdvert', Verify, updateAdvert);
+router.put('/updateAdvert', Verify, upload, updateAdvert);
 
 /**
  * DELETE /delete/:id

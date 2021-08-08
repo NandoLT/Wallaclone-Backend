@@ -63,14 +63,12 @@ class AdvertsController {
      */
     async createAdvert(req, res, next) {
         const data = req.body;
-        console.log('DATA', req);
         const authUserId = req.apiAuthUserId
         const userValidation = userVerify(data.userId, authUserId ); 
         
         if(userValidation) {
             try {
                 const file = req.file;
-                console.log('FILE', file);
                 if (data.status > 3) {
                     res.json({ message : 'The status must be a number between 0 and 3' });
                 }
@@ -78,7 +76,6 @@ class AdvertsController {
                 const advert = new Advert(data);
     
                 if (file) {
-                    console.log('ORIGINAL NAME', file.originalname)
                     advert.photo.push(file.originalname);
                 }
     
@@ -106,10 +103,15 @@ class AdvertsController {
 
         if(userValidation) {
             try {
+                const file = req.file;
                 if (data.status > 3) {
                     res.json({ message : 'The status must be a number between 0 and 3' });
                 }
-        
+                
+                if (file) {
+                    data.photo.push(file.originalname);
+                }
+
                 const updatedAdvert = await Advert.findOneAndUpdate(filter, data, {
                     new: true
                 });
@@ -139,13 +141,14 @@ class AdvertsController {
     async deleteAdvert(req, res, next) {
     
         const advert = req.params.id;
-        const { userId } = await  Advert.findOne({ _id: advert });
+        const { userId, photo } = await  Advert.findOne({ _id: advert });
         const authUserId = req.apiAuthUserId;
         const userValidation = userVerify(userId, authUserId);
 
         if(userValidation) {
             try {
                 await Advert.deleteOne ({ _id: advert });
+                await deleteSingleImage(procces.env.AWS_S3_BUCKET, `${userId}/${photo[0]}`)
                 res.status(200).json({ result: `Product ${advert} deleted successfully`});
             } catch (error) {
                 res.status(500).json({ message: error.message });

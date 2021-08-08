@@ -41,7 +41,7 @@ const changeInAdvert = (updatedAdvert, changeType) => {
 }
 
 
-const relatedAds = (advertExample) => {
+const relatedAds = async (advertExample) => {
     //extraer datos para pasar a filtros y que me den lista de anuncios similares.
     const name = advertExample.name;
     const minPrice = advertExample.price - process.env.MIN_PRICE_PERCENTAGE;

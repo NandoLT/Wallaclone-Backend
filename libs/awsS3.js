@@ -29,7 +29,7 @@ const storage = multerS3({
 
 const upload = multer({ 
     storage: storage,
-    limits : {fileSize : 1000000},
+    // limits : {fileSize : 1000000},
 }).single('photo');
 
 const createUserFolder = async (userId) => {

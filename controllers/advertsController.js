@@ -63,29 +63,25 @@ class AdvertsController {
      */
     async createAdvert(req, res, next) {
         const data = req.body;
-        const authUserId = req.apiAuthUserId
-        const userValidation = userVerify(data.userId, authUserId ); 
+        const userId = req.apiAuthUserId;
+        data.userId = userId;
         
-        if(userValidation) {
-            try {
-                const file = req.file;
-                if (data.status > 3) {
-                    res.json({ message : 'The status must be a number between 0 and 3' });
-                }
-    
-                const advert = new Advert(data);
-    
-                if (file) {
-                    advert.photo.push(file.originalname);
-                }
-    
-                const newAdvert = await advert.save();
-                res.status(201).json({ result: newAdvert });
-            } catch (error) {
-                res.status(500).json({ message: error.message });
+        try {
+            const file = req.file;
+            if (data.status > 3) {
+                res.json({ message : 'The status must be a number between 0 and 3' });
             }
-        } else {
-            res.status(401).json({ message: 'User verification invalid' });
+
+            const advert = new Advert(data);
+
+            if (file) {
+                advert.photo.push(file.originalname);
+            }
+
+            const newAdvert = await advert.save();
+            res.status(201).json({ result: newAdvert });
+        } catch (error) {
+            res.status(500).json({ message: error.message });
         }
     }
 

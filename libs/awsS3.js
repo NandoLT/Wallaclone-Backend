@@ -16,7 +16,7 @@ const s3 = new aws.S3();
 const storage = multerS3({
     s3: s3,
     bucket: (req, res, cb) => {
-        cb(null, `${process.env.AWS_S3_BUCKET}/${req.body.userId}`);
+        cb(null, `${process.env.AWS_S3_BUCKET}/${req.apiAuthUserId}`);
     },
     acl: 'public-read',
     contentType: (req, file, cb) => {

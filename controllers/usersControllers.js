@@ -15,12 +15,11 @@ class UsersController {
      * GET /:username
      */
     async getUser(req, res, next) {
-        const user = req.params.username;
-
-        const { name, surname, email } = await User.findOne({name: user})
-        const userNoPassword = { name, surname, email };
-
         try {
+            const user = req.params.username;
+            const { name, surname, email } = await User.findOne({name: user})
+            const userNoPassword = { name, surname, email };
+
             res.status(200).json({ result: userNoPassword });
         } catch (error) {
             res.status(500).json({ message: error.message });
@@ -69,25 +68,21 @@ class UsersController {
 
     async updateUser(req, res, next) {
         const data = req.body;
-        const filter = { name: data.name };
         const authUserId = req.apiAuthUserId;
+        const filter = { _id: authUserId };
 
-        const { _id: userId } = await User.findOne( filter );
+        // const { _id: userId } = await User.findOne( filter );
 
-        const userValidation = userVerify(JSON.stringify(userId), JSON.stringify(authUserId) );
+        // const userValidation = userVerify(JSON.stringify(userId), JSON.stringify(authUserId) );
 
-        if(userValidation) {
-            try {        
-                const updateUser = await User.findOneAndUpdate(filter, data, {
-                    new: true
-                });
-                res.status(201).json({ result: updateUser });
-            } catch (error) {
-                res.status(500).json({ message: error.message });
-            }
-        } else {
-            res.status(401).json({ message: 'User verification invalid' });
-        } 
+        try {        
+            const updateUser = await User.findOneAndUpdate(filter, data, {
+                new: true
+            });
+            res.status(201).json({ result: updateUser });
+        } catch (error) {
+            res.status(500).json({ message: error.message });
+        }
     }
 }
 

@@ -137,7 +137,6 @@ class AdvertsController {
      * DELETE /delete/:id
      */
     async deleteAdvert(req, res, next) {
-    
         const advert = req.params.id;
         const { userId, photo } = await  Advert.findOne({ _id: advert });
         const authUserId = req.apiAuthUserId;
@@ -146,7 +145,7 @@ class AdvertsController {
         if(userValidation) {
             try {
                 await Advert.deleteOne ({ _id: advert });
-                await deleteSingleImage(procces.env.AWS_S3_BUCKET, `${userId}/${photo[0]}`)
+                await deleteSingleImage(process.env.AWS_S3_BUCKET, `${userId}/${photo[0]}`)
                 res.status(200).json({ result: `Product ${advert} deleted successfully`});
             } catch (error) {
                 res.status(500).json({ message: error.message });
@@ -183,8 +182,6 @@ class AdvertsController {
         } else {
             res.status(401).json({ message: 'User verification invalid' });
         }
-
-
     }
 
     /**

@@ -48,7 +48,7 @@ router.put('/updateAdvert', Verify, upload, updateAdvert);
  * DELETE /delete/:id
  * Delete advert by id
  */
-router.delete('/delete/:id', Verify, deleteAdvert);
+router.post('/delete/:id', Verify, deleteAdvert);
 
 /**
  * DELETE /deleteImage/:userId/:imageName

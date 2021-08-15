@@ -100,11 +100,13 @@ class AdvertsController {
         if(userValidation) {
             try {
                 const file = req.file;
+                console.log('FILE', file);
                 if (data.status > 3) {
                     res.json({ message : 'The status must be a number between 0 and 3' });
                 }
                 
                 if (file) {
+                    data.photo = [];
                     data.photo.push(file.originalname);
                 }
 

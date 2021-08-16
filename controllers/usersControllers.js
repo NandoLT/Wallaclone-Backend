@@ -34,23 +34,25 @@ class UsersController {
         try {
             const userId = req.apiAuthUserId;
 
-            // Primero borramos al usuario
-            await User.deleteOne({ _id: userId });
+            // await User.deleteOne({ _id: userId }); OK
     
             // Borramos el id de esos anuncios en los favoritos de todos los usuarios
             // Sacar esta operación fuera para evitar que la app se quedé colgada en este punto
-            const { _id: advertsToDelete } = await Advert.find({ userId: { $in: userId }});
-            const { favorites } = await User.find({ _id: { $nin: userId }, favorites: { $in: [advertsToDelete]} });
-    
-            console.log('Lista de anuncios para borrar en favs', advertsToDelete);
-            advertsToDelete.forEach(advert => {
-                favorites.forEach(favorite => {
-                    const index = favorites.indexOf(favorite);
-                    if (index > -1) {
-                        favorites.splice(index, 1);
-                    }
+            const advertsToDelete = await Advert.find({ userId: { $in: userId }}); // OK
+            const advertsIds = advertsToDelete.map( advert => advert._id.toString()); 
+            const usersRemoveFavorites = await User.find({ favorites: { $in: advertsIds  }}); 
+
+            if(usersRemoveFavorites.length !== 0) {
+                advertsIds.forEach(advert => {
+                    usersRemoveFavorites.forEach(async favorite => {
+                        const index = favorite.favorites.indexOf(advert);
+                        if (index > -1) {
+                            favorite.favorites.splice(index, 1);
+                            await favorite.save();
+                        }
+                    });
                 });
-            });
+            }
     
             // Borramos todos los anuncios de ese usuario
             await Advert.deleteMany({ userId: { $in: userId } });
@@ -59,7 +61,7 @@ class UsersController {
                 result: "Delete user succesfuly",
                 user: userId,
                 related_Ads: advertsToDelete,
-                remove_from_favs: `${favorites.length} times`
+                remove_from_favs: `${usersRemoveFavorites.length} times`
             });
         } catch (error) {
             res.status(500).json({ message: error.message });    

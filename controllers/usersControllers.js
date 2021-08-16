@@ -34,11 +34,11 @@ class UsersController {
         try {
             const userId = req.apiAuthUserId;
 
-            // await User.deleteOne({ _id: userId }); OK
+            await User.deleteOne({ _id: userId });
     
             // Borramos el id de esos anuncios en los favoritos de todos los usuarios
             // Sacar esta operación fuera para evitar que la app se quedé colgada en este punto
-            const advertsToDelete = await Advert.find({ userId: { $in: userId }}); // OK
+            const advertsToDelete = await Advert.find({ userId: { $in: userId }});
             const advertsIds = advertsToDelete.map( advert => advert._id.toString()); 
             const usersRemoveFavorites = await User.find({ favorites: { $in: advertsIds  }}); 
 

@@ -45,16 +45,16 @@ router.post('/', Verify, upload, createAdvert);
 router.put('/updateAdvert', Verify, upload, updateAdvert);
 
 /**
- * DELETE /delete/:id
- * Delete advert by id
+ * POST /delete/:id
+ * post advert by id
  */
 router.post('/delete/:id', Verify, deleteAdvert);
 
 /**
- * DELETE /deleteImage/:userId/:imageName
- * Delete single image
+ * POST /deleteImage/:userId/:imageName
+ * post single image
  */
-router.delete('/deleteImage/:advertId/:imageName', Verify, deleteImage);
+router.post('/deleteImage/:advertId/:imageName', Verify, deleteImage);
 
 /**
  * GET /getFavorites

@@ -37,6 +37,7 @@ class UsersController {
             await User.deleteOne({ _id: userId });
     
             // Borramos el id de esos anuncios en los favoritos de todos los usuarios
+            //Añadir notificación de aviso para usuarios de que determinado producto ha desaparecido de sus favoritos
             // Sacar esta operación fuera para evitar que la app se quedé colgada en este punto
             const advertsToDelete = await Advert.find({ userId: { $in: userId }});
             const advertsIds = advertsToDelete.map( advert => advert._id.toString()); 
@@ -57,6 +58,8 @@ class UsersController {
             // Borramos todos los anuncios de ese usuario
             await Advert.deleteMany({ userId: { $in: userId } });
 
+            // TODO: Hay que borrar las imagenes asociadas a esos anuncios en S3
+
             res.status(200).json( {
                 result: "Delete user succesfuly",
                 user: userId,
@@ -72,10 +75,6 @@ class UsersController {
         const data = req.body;
         const authUserId = req.apiAuthUserId;
         const filter = { _id: authUserId };
-
-        // const { _id: userId } = await User.findOne( filter );
-
-        // const userValidation = userVerify(JSON.stringify(userId), JSON.stringify(authUserId) );
 
         try {        
             const updateUser = await User.findOneAndUpdate(filter, data, {

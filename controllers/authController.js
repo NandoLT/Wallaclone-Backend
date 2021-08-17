@@ -29,9 +29,9 @@ class AuthController {
                 user.password = await user.hashPassword(user.password);
                 const newUser = await user.save();
                 
-                createUserFolder(newUser._id);
+                await createUserFolder(newUser._id);
 
-                Sign(newUser._id, (err, jwtToken) => {
+                Sign(newUser._id, '2h', (err, jwtToken) => {
                     if (err) {
                         res.status(500).json({ message: err.message });
                     }
@@ -109,7 +109,7 @@ class AuthController {
                     res.status(500).json({ message: err.message });
                 }
                 
-                const template = recoverPassTemplate(user, jwtToken);
+                const template = recoverPassTemplate(user);
 
                 const emailData = {
                     from: 'akkerstudio@gmail.com',
@@ -119,7 +119,7 @@ class AuthController {
                 };
 
                 emailSender(emailData);
-                res.status(200).json({ result: true });
+                res.status(200).json({ token: jwtToken });
             });
 
         } catch (error) {
@@ -140,10 +140,9 @@ class AuthController {
             }
 
             const _id = req.apiAuthUserId;
-            const user = await User.find({ _id });
-
-            user.password = newPassword;
-            user.save();
+            const user = await User.findOne({ _id });
+            const password = await user.hashPassword(newPassword);
+            await User.updateOne({ _id }, { password });
             res.status(200).json({ result: true });
 
         } catch (error) {

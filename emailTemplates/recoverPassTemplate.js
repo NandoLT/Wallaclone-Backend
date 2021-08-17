@@ -1,4 +1,4 @@
-module.exports = (user, token) => {
+module.exports = (user) => {
     return (
     `<div>
         <h1>Wallaclone Recover Password Process</h1>
@@ -6,6 +6,6 @@ module.exports = (user, token) => {
         <p>This is the process to recover your password:</p>
         <br />
         <p>Please, click on given link to reset your password:</p>
-        <p>http://18.188.214.80/api/users/resetpassword/${token}</p>
+        <p>http://18.188.214.80/reset-password</p>
     </div>`);
 }

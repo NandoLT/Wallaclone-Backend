@@ -15,6 +15,12 @@ const {
     resetPassword
 } = require('../../controllers/authController');
 
+const {
+    getUser,
+    deleteUser,
+    updateUser
+} = require('../../controllers/usersControllers');
+
 /**
  * POST /register
  * register new user
@@ -42,5 +48,22 @@ router.post('/recoverpassword', recoverPassword);
  * POST /recoverpassword
  */
 router.post('/resetpassword', Verify, resetPassword);
+
+/**
+ * GET /username
+ */
+router.get('/:username', Verify, getUser);
+
+/**
+ * DELETE /deleteuser/:userid
+ * delete user by id
+ */
+router.delete('/deleteuser', Verify, deleteUser);
+
+/**
+ * PUT /updateUser
+ * update user info
+ */
+router.put('/updateuser', Verify, updateUser);
 
 module.exports = router;

@@ -1,10 +1,13 @@
 'use strict';
 
 // local requires
+require('dotenv');
 const mongoose = require('mongoose');
 const { User, Advert } = require('../models');
 const emailSender = require('../microservices/email/emailSenderRequester.js');
 const userVerify = require('../libs/userVerify.js');
+const { deleteMultipleImages, deleteSingleImage } = require('../libs/awsS3');
+const { changeInAdvert } = require('../libs/advertsNotifications');
 
 class AdvertsController {
 
@@ -59,32 +62,26 @@ class AdvertsController {
      * POST /
      */
     async createAdvert(req, res, next) {
-        
         const data = req.body;
-        const authUserId = req.apiAuthUserId;
-        const userValidation = userVerify(data.userId, authUserId ); 
-
-        if(userValidation) {
-            try {
-                const file = req.file;
-    
-                if (data.status > 3) {
-                    res.json({ message : 'The status must be a number between 0 and 3' });
-                }
-    
-                const advert = new Advert(data);
-    
-                if (file) {
-                    advert.photo = file.originalname;
-                }
-    
-                const newAdvert = await advert.save();
-                res.status(201).json({ result: newAdvert });
-            } catch (error) {
-                res.status(500).json({ message: error.message });
+        const userId = req.apiAuthUserId;
+        data.userId = userId;
+        
+        try {
+            const file = req.file;
+            if (data.status > 3) {
+                res.json({ message : 'The status must be a number between 0 and 3' });
             }
-        } else {
-            res.status(401).json({ message: 'User verification invalid' });
+
+            const advert = new Advert(data);
+
+            if (file) {
+                advert.photo.push(file.originalname);
+            }
+
+            const newAdvert = await advert.save();
+            res.status(201).json({ result: newAdvert });
+        } catch (error) {
+            res.status(500).json({ message: error.message });
         }
     }
 
@@ -96,19 +93,36 @@ class AdvertsController {
         const filter = { _id: data.productId };
         const authUserId = req.apiAuthUserId;
 
-        const { userId } = await Advert.findById({ _id: filter });
+        const { userId } = await Advert.findById(filter);
 
         const userValidation = userVerify(userId, authUserId );
 
         if(userValidation) {
             try {
+                const file = req.file;
+                console.log('FILE', file);
                 if (data.status > 3) {
                     res.json({ message : 'The status must be a number between 0 and 3' });
                 }
-        
+                
+                if (file) {
+                    data.photo = [];
+                    data.photo.push(file.originalname);
+                }
+
                 const updatedAdvert = await Advert.findOneAndUpdate(filter, data, {
                     new: true
                 });
+
+                if(( updatedAdvert.status === 3 || updatedAdvert.status === 2) && (data.satus !== updatedAdvert.status)) {
+                    console.log('STATUS CHANGE');
+                    changeInAdvert(updatedAdvert, 'status' );
+                }
+                
+                if(updatedAdvert.price !== data.price) {
+                    console.log('PRICE CHANGE');
+                    changeInAdvert(updatedAdvert, 'price' );
+                }
     
                 res.status(201).json({ result: updatedAdvert });
             } catch (error) {
@@ -123,18 +137,18 @@ class AdvertsController {
      * DELETE /delete/:id
      */
     async deleteAdvert(req, res, next) {
-    
         const advert = req.params.id;
-        const { userId } = await  Advert.findOne({ _id: advert });
+        const { userId, photo } = await  Advert.findOne({ _id: advert });
         const authUserId = req.apiAuthUserId;
         const userValidation = userVerify(userId, authUserId);
 
         if(userValidation) {
             try {
                 await Advert.deleteOne ({ _id: advert });
+                await deleteSingleImage(process.env.AWS_S3_BUCKET, `${userId}/${photo[0]}`)
                 res.status(200).json({ result: `Product ${advert} deleted successfully`});
             } catch (error) {
-                res.status(500).json({ message: message.error });
+                res.status(500).json({ message: error.message });
             }
         } else {
             res.status(401).json({ message: 'User verification invalid' });
@@ -143,29 +157,64 @@ class AdvertsController {
     }
 
     /**
+     * DELETE /deleteImage/:advertId/:imageName
+     */
+    async deleteImage(req, res, next){
+        const _id = req.params.advertId;
+        const imageName = req.params.imageName;
+
+        const imageAdvert = await Advert.findById({ _id });
+
+        const authUserId = req.apiAuthUserId;
+        const userValidation = userVerify(imageAdvert.userId, authUserId);
+
+        if (userValidation) {
+            try {
+                imageAdvert.photo.pop();
+                imageAdvert.save();
+
+                await deleteSingleImage(`${process.env.AWS_S3_BUCKET}`, `${_id}/${imageName}`);
+
+                res.json({ result: 'Image deleted succesfuly' });
+            } catch (error) {
+                res.status(500).json({ message: error.message });
+            }
+        } else {
+            res.status(401).json({ message: 'User verification invalid' });
+        }
+    }
+
+    /**
+     * GET /getFavorites
+     */
+    async getFavorites(req, res, next) {
+        const _id = req.apiAuthUserId;
+        try {
+            const user = await User.findOne({ _id });
+            res.json({ result: user.favorites });
+        } catch (error) {
+            res.status(500).json({ message: error.message });
+        }
+    }
+
+    /**
      * POST /addFavorite
      */
     async addFavorite(req, res, next) {        
 
-        const { userId, productId } = req.body;
+        const { advertId } = req.body;
         const authUserId = req.apiAuthUserId;
-        const userValidation = userVerify(userId, authUserId );
 
-        if( userValidation ) {
-            try {   
-                const _id = userId;
-        
-                const userToFavorite = await User.findOne({ _id });
-                userToFavorite.favorites.push(productId);
-                await userToFavorite.save();
-        
-                res.status(201).json({ result: `${productId} add to ${_id}` });
-                
-            } catch (error) {            
-                res.status(500).json({ message: `Problems to add product ${productId} in user ${_id}`})
-            }
-        } else {
-            res.status(401).json({ message: 'User verification invalid' });
+        try {   
+            const _id = authUserId;
+    
+            const userToFavorite = await User.findOne({ _id });
+            userToFavorite.favorites.push(advertId);
+            await userToFavorite.save();
+    
+            res.status(200).json({ result: `${advertId} add to ${_id}` });            
+        } catch (error) {            
+            res.status(500).json({ message: `Problems to add product ${advertId} in user ${_id}`})
         }
     }
 
@@ -175,31 +224,25 @@ class AdvertsController {
      */
     async removeFavorite(req, res, next) {  
 
-        const { userId, productId } = req.body;
+        const { advertId } = req.body;
         const authUserId = req.apiAuthUserId;
-        const userValidation = userVerify(userId, authUserId );
 
-        if(userValidation) {
-            try {
-                const _id = userId;
-    
-                const removeFromFavorites = await User.findOne({ _id });
-                const index = removeFromFavorites.favorites.indexOf(productId);
-                if (index > -1) {
-                    removeFromFavorites.favorites.splice(index, 1);
-                }
-                await removeFromFavorites.save();
-    
-                res.status(200).json({ result: `${productId} remove from ${_id}` })
-                
-            } catch (error) {
-                res.status(500).json({ message: `Problems to remove product ${productId} from user ${_id}`})
+        try {
+            const _id = authUserId;
+
+            const removeFromFavorites = await User.findOne({ _id });
+            const index = removeFromFavorites.favorites.indexOf(advertId);
+            if (index > -1) {
+                removeFromFavorites.favorites.splice(index, 1);
             }
-        } else {
-            res.status(401).json({ message: 'User verification invalid' });
+
+            await removeFromFavorites.save();
+
+            res.status(200).json({ result: `${advertId} remove from ${_id}` })            
+        } catch (error) {
+            res.status(500).json({ message: `Problems to remove product ${advertId} from user ${_id}`})
         }
     }
-
 }
 
 module.exports = new AdvertsController();

@@ -5,7 +5,7 @@
   - /api/adverts
   - /api/users
 
-### USER OPERATIONS :
+### USER AUTHORIZATION OPERATIONS:
 - POST<br>
     - /login
         - params { email, password } <b>required</b>
@@ -29,14 +29,24 @@
         - params { newPassword, confirmNewPassword }
         - response {  }
 
+### USER OPERATIONS :
+- GET <br>
+    - /:username (get specific user) (jwt required in header "Authorization")
+- DELETE <br>
+    - /deleteuser (delete specific user) (jwt required in header "Authorization")
+- PUT <br>
+    - /updateuser (update specific user info) (jwt required in header "Authorization")
+        - params { name, surname, email } <b>optionals</b>
+
 ### ADVERTS OPERATIONS:
 - GET<br>
     - / (get all adverts)
         - params { name, status, minPrice, maxPrice, tags, skip, limit, sort } <b>optional</b>
-- GET<br>
     - /:id (get advert by id)
+    - /getFavorites (get favorites to an specific user) (jwt required in header "Authorization")
 - DELETE<br>
-    - /delete/:id (delte advert by id) (jwt required in header "Authorization")
+    - /delete/:id (delete advert by id) (jwt required in header "Authorization")
+    - /deleteImage/:advertId/:imageName (delete single image) (jwt required in header "Authorization")
 - POST<br>
     - / (jwt required in header "Authorization")
         - params { name, status, price, tags, userId } <b>required</b> { photo } <b>optional</b>
@@ -46,4 +56,4 @@
         -  params { userId, productId } <b>required</b>
 - PUT<br>
     - /updateAdvert (jwt required in header "Authorization")
-        -  params { name, status, price, tags, userId } <b> required </b> { photo } <b>optional</b>
+        -  params { name, status, price, tags, productId } <b> required </b> { photo } <b>optional</b>

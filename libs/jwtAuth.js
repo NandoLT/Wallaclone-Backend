@@ -14,7 +14,7 @@ module.exports = {
                 res.status(401).json({ result: "Unauthorizaed operation. Not valid Token or not provided" });
             }
             req.apiAuthUserId = payload._id;
-            next()
+            next();
         })
     },
 

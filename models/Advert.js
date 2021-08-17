@@ -21,7 +21,9 @@ const advertSchema = mongoose.Schema({
         index: true
     },
     province: String,
-    photo: String,
+    photo: {
+        type: Array
+    },
     tags: {
         type: Array,
         index: true

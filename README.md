@@ -15,7 +15,19 @@
         - params { name, username, email, password } <b>required</b>
         - response { msg: "User and Token Created", user: { new user }, token: "token" }
 - POST<br>
-    - /logout   [ not implemented ]
+    - /logout
+        - params {}
+        - response { result: true }
+
+- POST<br>
+    - /recoverpassword
+        - params { email } <b>required</b>
+        - response { }
+
+- POST<br>
+    - /resetpassword
+        - params { newPassword, confirmNewPassword }
+        - response {  }
 
 ### USER OPERATIONS :
 - GET <br>

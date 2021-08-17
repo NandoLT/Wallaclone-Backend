@@ -11,6 +11,8 @@ const {
     register,
     login,
     logout,
+    recoverPassword,
+    resetPassword
 } = require('../../controllers/authController');
 
 const {
@@ -36,6 +38,16 @@ router.post('/login', login);
  * user logout
  */
 router.post('/logout', logout);
+
+/**
+ * POST /recoverpassword
+ */
+router.post('/recoverpassword', recoverPassword);
+
+/**
+ * POST /recoverpassword
+ */
+router.post('/resetpassword', Verify, resetPassword);
 
 /**
  * GET /username

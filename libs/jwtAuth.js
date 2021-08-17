@@ -18,7 +18,7 @@ module.exports = {
         })
     },
 
-    Sign: (id, callback) => {
-        return jwt.sign({_id: id}, process.env.JWT_SECRET, {expiresIn: '2h'}, callback);
+    Sign: (id, expiration, callback) => {
+        return jwt.sign({_id: id}, process.env.JWT_SECRET, { expiresIn: expiration }, callback);
     }
 }

@@ -5,6 +5,7 @@ const { User } = require('../models');
 const emailSender = require('../microservices/email/emailSenderRequester.js');
 const { Sign } = require('../libs/jwtAuth');
 const recoverPassTemplate = require('../emailTemplates/recoverPassTemplate');
+const emailData = require('../libs/emailData');
 const { createUserFolder } = require('../libs/awsS3')
 
 class AuthController {
@@ -111,12 +112,7 @@ class AuthController {
                 
                 const template = recoverPassTemplate(user);
 
-                const emailData = {
-                    from: 'akkerstudio@gmail.com',
-                    to: 'avgvalenzuela@gmail.com',
-                    subject: "Recover Password",
-                    html: template,
-                };
+                emailData(process.env.EMAIL_DATA_FROM_RECOVER, user.email, process.env.EMAIL_DATA_SUBJECT_RECOVER, template);
 
                 emailSender(emailData);
                 res.status(200).json({ token: jwtToken });

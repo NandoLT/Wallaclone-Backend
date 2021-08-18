@@ -1,43 +1,41 @@
 'use require'
 
 require('dotenv');
-// local requires
 const mongoose = require('mongoose');
+
+// local requires
 const { Advert } = require('../models');
 const searchUsers = require('./searchUsersNotificactions');
 const emailSender = require('../microservices/email/emailSenderRequester.js');
+const emailData = require('../libs/emailData');
+const changePriceNotificationTemplate = require('../emailTemplates/changePriceNotification');
+const changeStatusNotificationTemplate = require('../emailTemplates/changeStatusnotification');
 
-const changeInAdvert = (updatedAdvert, changeType) => {
+const changeInAdvert = async (updatedAdvert, changeType) => {
+
+    const userList = await searchUsers(updatedAdvert._id);
+
+    const usersEmails = userList.map(user => {
+        return user.email;
+    });
+
+    let template = ''
+
     if(changeType.type === 'status') {
-        switch(changeType.type) {
-            case 2:
-                changeType.type = 'Reserved';
-                break;
-            case 3:
-                changeType.type = 'Sold';
-                break;
-        }
 
-        const userList = searchUsers(updatedAdvert.advertId);
-
-        //Generar mensaje de email con to: [array users]
-        //Mensaje: ==> llamar a temaplate pasando datos del anuncio
-        // GUardar en Data
-        const data = '' //temaplate parametrizado
-        // llamar microservicio(data);
-        emailSender(data);
+        template = changeStatusNotificationTemplate(updatedAdvert);
+        
     } else {
-        // En otro caso el tipo de cambio será 'price'
-        const userList = searchUsers(updatedAdvert.advertId);
-        //Generar mensaje de email con to: [array users]
-        //Mensaje: ==> llamar a temaplate pasando datos del anuncio
-        // GUardar en Data
-        const data = '' //temaplate parametrizado
-        // llamar microservicio(data);
-        emailSender(data);
-    }
 
-    relatedAds(updatedAdvert);
+        template = changePriceNotificationTemplate(updatedAdvert);
+
+    }
+    
+    const Data = emailData(process.env.EMAIL_DATA_FROM_NOTIFICATIONS, usersEmails, process.env.EMAIL_DATA_SUBJECT_NOTIFICATIONS, template);
+    
+    emailSender(Data);
+
+    //relatedAds(updatedAdvert);
 }
 
 

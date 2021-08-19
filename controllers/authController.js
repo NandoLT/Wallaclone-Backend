@@ -112,9 +112,9 @@ class AuthController {
                 
                 const template = recoverPassTemplate(user);
 
-                emailData(process.env.EMAIL_DATA_FROM_RECOVER, user.email, process.env.EMAIL_DATA_SUBJECT_RECOVER, template);
+                const data = emailData(process.env.EMAIL_DATA_FROM_RECOVER, user.email, process.env.EMAIL_DATA_SUBJECT_RECOVER, template);
 
-                emailSender(emailData);
+                emailSender(data);
                 res.status(200).json({ token: jwtToken });
             });
 

@@ -1,4 +1,6 @@
-module.exports = (advert) => {
+module.exports = (advert, relatedTemplate) => {
+
+    relatedTemplate ? relatedTemplate : '';
     return (
     `<div>
         <h1>Wallaclone Notifications System</h1>
@@ -11,6 +13,7 @@ module.exports = (advert) => {
         <h4> ${advert.price} € </h4>
         <h4> ${advert.province} </h4>
         <hr>
+        ${relatedTemplate}
         <br>
     </div>`);
 }

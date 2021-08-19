@@ -1,6 +1,6 @@
 'use strict';
 
-async function FillByFilters(name, status, minPrice, maxPrice, tags) {
+async function FillByFilters(name, status, minPrice, maxPrice, tags, province) {
     const filter = {};
 
     if (name) {
@@ -10,19 +10,23 @@ async function FillByFilters(name, status, minPrice, maxPrice, tags) {
 
 
     if (status) {
-        filter.status = status
+        filter.status = parseInt(status)
     }
 
     if (minPrice && !maxPrice) {
-        filter.price = { $gte: parseFloat(filterPrice) }
+        filter.price = { $gte: parseFloat(minPrice) }
     } else if (!minPrice && maxPrice) {
-        filter.price = { $lte: parseFloat(filterPrice) }
+        filter.price = { $lte: parseFloat(maxPrice) }
     } else if (minPrice && maxPrice) {
         filter.price = { $gte: parseFloat(minPrice), $lte: parseFloat(maxPrice) }
     }
 
     if (tags) {
-        filter.tags = tags
+        filter.tags = { $in: tags.split(',') }
+    }
+
+    if (province) {
+        filter.province = province;
     }
 
     return filter;

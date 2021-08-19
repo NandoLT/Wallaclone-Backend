@@ -17,18 +17,19 @@ class AdvertsController {
     async getAdverts(req, res, next) {
         try {
             const { 
-                name, 
-                status, 
-                minPrice, 
-                maxPrice, 
-                tags, 
-                skip, 
-                limit, 
-                sort 
+                name,
+                status,
+                minPrice,
+                maxPrice,
+                tags,
+                province,
+                skip,
+                limit,
+                sort
             } = req.query;
             const advert = new Advert();
 
-            const result = await advert.fillByFilters(name, status, minPrice, maxPrice, tags, skip, limit, sort);
+            const result = await advert.fillByFilters(name, status, minPrice, maxPrice, tags, province, skip, limit, sort);
             res.status(200).json({ result });
         } catch (error) {
             res.status(500).json({ message: error.message });

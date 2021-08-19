@@ -22,7 +22,7 @@ async function FillByFilters(name, status, minPrice, maxPrice, tags, province) {
     }
 
     if (tags) {
-        filter.tags = { $in: tags.split(',') }
+        filter.tags = { $in: tags }
     }
 
     if (province) {

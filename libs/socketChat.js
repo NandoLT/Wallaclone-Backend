@@ -1,6 +1,10 @@
+'use strict';
+
+require('dotenv');
+
 const io = require("socket.io")(3005, {
     cors: {
-      origin: "http://localhost:3000",
+      origin: process.env.SOCKET_CHAT_ORIGIN,
     },
   });
   
@@ -23,13 +27,13 @@ const io = require("socket.io")(3005, {
 
     console.log("User connected.");
   
-    //take userId and socketId from user
+    //take userId/socketId from user
     socket.on("addUser", (userId) => {
       addUser(userId, socket.id);
       io.emit("getUsers", users);
     });
   
-    //send and get message
+    //send/get message
     socket.on("sendMessage", ({ senderId, receiverId, text }) => {
       const user = getUser(receiverId);
       io.to(user.socketId).emit("getMessage", {

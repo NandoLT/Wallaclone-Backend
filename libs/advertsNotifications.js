@@ -27,10 +27,9 @@ const changeInAdvert = async (updatedAdvert, changeType) => {
     if(changeType.type === 'status') {
 
         template = changeStatusNotificationTemplate(updatedAdvert, relatedTemplate);
-
         
     } else {
-        
+
         template = changePriceNotificationTemplate(updatedAdvert, relatedTemplate);
         
     }
@@ -39,7 +38,6 @@ const changeInAdvert = async (updatedAdvert, changeType) => {
     const Data = emailData(process.env.EMAIL_DATA_FROM_NOTIFICATIONS, usersEmails, process.env.EMAIL_DATA_SUBJECT_NOTIFICATIONS, template);
     
     emailSender(Data);
-    
 }
 
 
@@ -55,8 +53,7 @@ const relatedAds = async (advertExample) => {
 
     const result = await advert.fillByFilters(name, status, minPrice, maxPrice);
 
-    return result;
-
+    return result
 }
 
 module.exports = { changeInAdvert, relatedAds };

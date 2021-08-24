@@ -30,7 +30,10 @@ class AdvertsController {
             const advert = new Advert();
 
             const result = await advert.fillByFilters(name, status, minPrice, maxPrice, tags, province, skip, limit, sort);
-            res.status(200).json({ result });
+            const totalFilteredAdverts = await advert.countByFilters(name, status, minPrice, maxPrice, tags, province, skip, limit, sort);
+            const totalAdverts = await advert.countByFilters(null, null, null, null, null, null, 0, 0, null);
+
+            res.status(200).json({ result, totalFilteredAdverts, totalAdverts });
         } catch (error) {
             res.status(500).json({ message: error.message });
         }
@@ -56,6 +59,39 @@ class AdvertsController {
 
             res.status(500).json({ message: error.message });
 
+        }
+    }
+
+    /**
+     * POST /getMyAdverts
+     */
+    async getMyAdverts(req, res, next) {
+        try {
+            const userId = req.apiAuthUserId;
+            const adverts = await Advert.find({ userId });
+
+            res.status(200).json({ result: adverts });
+
+        } catch (error) {
+            res.status(500).json({ message: error.message });
+        }
+    }
+
+    /**
+     * POST /getMyFavoriteAdverts
+     */
+    async getMyFavoriteAdverts(req, res, next) {
+        try {
+            const _id = req.apiAuthUserId;
+            const user = await User.findOne({ _id });
+            const favoriteAdvertsIds = user.favorites;
+
+            const result = await Advert.find({_id: {$in: favoriteAdvertsIds }})
+
+            res.status(200).json({ result });
+
+        } catch (error) {
+            res.status(500).json({ message: error.message });
         }
     }
 
@@ -245,6 +281,15 @@ class AdvertsController {
         } catch (error) {
             res.status(500).json({ message: `Problems to remove product ${advertId} from user ${_id}`})
         }
+    }
+
+    /**
+     * POST /tags
+     */
+    async getTags(req, res, next) {
+        // por ahora solo es esta lista cerrada
+        const tags = ['Móvil', 'Tecnologia', 'Deporte'];
+        res.status(200).json({ result: tags });
     }
 }
 

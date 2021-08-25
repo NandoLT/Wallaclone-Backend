@@ -6,8 +6,8 @@ const multerS3 = require('multer-s3');
 require('dotenv');
 
 aws.config.update({
-    secretAccessKey: process.env.AWS_SECRET_KEY,
-    accessKeyId: process.env.AWS_ACCES_KEY,
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
     region: process.env.AWS_REGION
 });
 
@@ -29,7 +29,7 @@ const storage = multerS3({
 
 const upload = multer({ 
     storage: storage,
-    // limits : {fileSize : 1000000},
+    // limits : {fileSize : process.env.MAX_SIZE_FILE},
 }).single('photo');
 
 const createUserFolder = async (userId) => {
@@ -38,7 +38,7 @@ const createUserFolder = async (userId) => {
         Bucket: process.env.AWS_S3_BUCKET
         },(err, data) => {
             console.log('ERROR S3', err);
-            // console.log('DATA S3', data);
+            console.log('DATA S3', data);
         });
 };
 

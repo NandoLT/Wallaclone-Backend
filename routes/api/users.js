@@ -17,10 +17,10 @@ const {
 } = require('../../controllers/authController');
 
 const {
+    getUserImage,
     getUser,
     deleteUser,
     updateUser,
-    getUserImage,
     uploadUserImage
 } = require('../../controllers/usersControllers');
 
@@ -53,6 +53,12 @@ router.post('/recoverpassword', recoverPassword);
 router.post('/resetpassword', Verify, resetPassword);
 
 /**
+ * GET /getUserImage
+ * get user image
+ */
+router.get('/getUserImage', Verify, getUserImage );
+
+/**
  * GET /username
  */
 router.get('/:username', Verify, getUser);
@@ -75,10 +81,6 @@ router.put('/updateuser', Verify, updateUser);
  */
 router.post('/userImage', Verify, upload, uploadUserImage );
 
-/**
- * GET /getUserImage
- * get user image
- */
- router.get('/getUserImage', Verify, getUserImage );
+
 
 module.exports = router;

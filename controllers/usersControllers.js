@@ -114,11 +114,13 @@ class UsersController {
      * GET /getUserImage
      */
     async getUserImage (req, res, next) {
+        console.log('GETUSERIMAGE');
         const authUserId = req.apiAuthUserId;
         const filter = { _id: authUserId };
 
         try {
             const imageUser = await User.findById(filter);
+            console.log('IMAGEUSER', imageUser);
             res.status(201).json({ result: imageUser.photo[0]})
         } catch (error) {
             res.status(500).json({ message: error.message });

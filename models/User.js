@@ -19,6 +19,9 @@ const userSchema = mongoose.Schema ({
         unique: true,
         index: true
     },
+    photo: {
+      type: Array
+    },
     password: String,
     favorites: {
       type: Array,

@@ -6,6 +6,7 @@ const router = express.Router();
 
 // local requires
 const { Verify } = require('../../libs/jwtAuth');
+const { upload } = require('../../libs/awsS3');
 
 const {
     register,
@@ -18,7 +19,9 @@ const {
 const {
     getUser,
     deleteUser,
-    updateUser
+    updateUser,
+    getUserImage,
+    uploadUserImage
 } = require('../../controllers/usersControllers');
 
 /**
@@ -65,5 +68,17 @@ router.delete('/deleteuser', Verify, deleteUser);
  * update user info
  */
 router.put('/updateuser', Verify, updateUser);
+
+/**
+ * POST /userImage
+ * upload user image
+ */
+router.post('/userImage', Verify, upload, uploadUserImage );
+
+/**
+ * GET /getUserImage
+ * get user image
+ */
+ router.get('/getUserImage', Verify, getUserImage );
 
 module.exports = router;

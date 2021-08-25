@@ -71,6 +71,9 @@ class UsersController {
         }
     }
 
+    /**
+     * UPDATE /
+     */
     async updateUser(req, res, next) {
         const data = req.body;
         const authUserId = req.apiAuthUserId;
@@ -81,6 +84,42 @@ class UsersController {
                 new: true
             });
             res.status(201).json({ result: updateUser });
+        } catch (error) {
+            res.status(500).json({ message: error.message });
+        }
+    }
+
+    /**
+     * POST /userimage
+     */
+    async uploadUserImage (req, res, next) {
+        const authUserId = req.apiAuthUserId;
+        const filter = { _id: authUserId };
+        const file = req.file;
+
+        try {        
+            const updateUserImage = await User.findById(filter);
+            if (file) {
+                updateUserImage.photo.push(file.originalname);
+            }
+            updateUserImage.save();
+            res.status(201).json({ result: updateUserImage });
+        } catch (error) {
+            res.status(500).json({ message: error.message });
+        }
+
+    }
+
+    /**
+     * GET /getUserImage
+     */
+    async getUserImage (req, res, next) {
+        const authUserId = req.apiAuthUserId;
+        const filter = { _id: authUserId };
+
+        try {
+            const imageUser = await User.findById(filter);
+            res.status(201).json({ result: imageUser.photo[0]})
         } catch (error) {
             res.status(500).json({ message: error.message });
         }

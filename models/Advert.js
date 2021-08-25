@@ -5,6 +5,7 @@ const mongoose = require('mongoose');
 
 // local requires
 const FillByFilters = require('../data/advertsFinders/advertsFillByFilters');
+const CountByFilters = require('../data/advertsFinders/advertsCountByFilters');
 
 const advertSchema = mongoose.Schema({
     name: {
@@ -47,8 +48,23 @@ advertSchema.methods.fillByFilters = async function (name, status, minPrice, max
     const filters = await FillByFilters(name, status, minPrice, maxPrice, tags, province);
     
     const query = Advert.find(filters);
-    query.limit(parseInt(limit));
     query.skip(parseInt(skip));
+    query.limit(parseInt(limit));
+    query.sort(sort);
+    return query.exec();
+};
+
+// count adverts by filters
+advertSchema.methods.countByFilters = async function (name, status, minPrice, maxPrice, tags, province, skip, limit, sort) {
+    const filters = await CountByFilters(name, status, minPrice, maxPrice, tags, province);
+    
+    const query = Advert.countDocuments(filters);
+    query.skip(parseInt(skip));
+
+    if (limit > 0) {
+        query.limit(parseInt(limit));
+    }
+
     query.sort(sort);
     return query.exec();
 };

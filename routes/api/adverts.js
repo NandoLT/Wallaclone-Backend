@@ -11,13 +11,16 @@ const router = express.Router();
 const {
     getAdverts,
     getAdvert,
+    getMyAdverts,
     createAdvert,
     updateAdvert,
     deleteAdvert,
     deleteImage,
     getFavorites,
+    getMyFavoriteAdverts,
     addFavorite,
     removeFavorite,
+    getTags
 } = require('../../controllers/advertsController')
 
 /**
@@ -31,6 +34,12 @@ router.get('/', getAdverts);
  * Get advert by id
  */
 router.get('/:id', getAdvert);
+
+/**
+ * POST /getMyAdverts
+ * get all my tags
+ */
+router.post('/getMyAdverts', getMyAdverts);
 
 /**
  * POST
@@ -63,6 +72,12 @@ router.post('/deleteImage/:advertId/:imageName', Verify, deleteImage);
 router.post('/getFavorites', Verify, getFavorites);
 
 /**
+ * GET /getMyFavoriteAdverts
+ * Get all  my favorites adverts
+ */
+router.post('/getMyFavoriteAdverts', Verify, getMyFavoriteAdverts);
+
+/**
  * POST /addFavorite
  * Add favorites advert to specific user
  */
@@ -73,5 +88,11 @@ router.post('/addFavorite', Verify, addFavorite);
  * Remove advert from favorites to specific user
  */
 router.post('/removeFavorite', Verify, removeFavorite);
+
+/**
+ * POST /tags
+ * get all tags
+ */
+router.post('/tags', getTags);
 
 module.exports = router;

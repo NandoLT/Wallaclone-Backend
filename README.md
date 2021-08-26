@@ -29,9 +29,14 @@
         - params { newPassword, confirmNewPassword }
         - response {  }
 
-### USER OPERATIONS :
+### USER OPERATIONS 
 - GET <br>
-    - /:username (get specific user) (jwt required in header "Authorization")
+    - / (get my own user) (jwt required in header "Authorization")
+    - /:nickname (get specific user) (jwt required in header "Authorization")
+    - /getUserImage (get user avatar) (jwt required in header "Authorization")
+- POST <br>
+    - /userImage (post by form-data a user avatar) (jwt required in header "Authorization")
+        - params {photo} <b>required</b>
 - DELETE <br>
     - /deleteuser (delete specific user) (jwt required in header "Authorization")
 - PUT <br>
@@ -43,7 +48,10 @@
     - / (get all adverts)
         - params { name, status, minPrice, maxPrice, tags, skip, limit, sort } <b>optional</b>
     - /:id (get advert by id)
+    - /getMyAdverts (get my owns adverts) (jwt required in header "Authorization")
     - /getFavorites (get favorites to an specific user) (jwt required in header "Authorization")
+    - /getMyFavoriteAdverts (get my owns favoirtes) (jwt required in header "Authorization")
+    - /tags (get all tags availables) 
 - DELETE<br>
     - /delete/:id (delete advert by id) (jwt required in header "Authorization")
     - /deleteImage/:advertId/:imageName (delete single image) (jwt required in header "Authorization")

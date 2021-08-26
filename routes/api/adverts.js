@@ -93,6 +93,6 @@ router.post('/removeFavorite', Verify, removeFavorite);
  * POST /tags
  * get all tags
  */
-router.post('/tags', getTags);
+router.get('/tags', getTags);
 
 module.exports = router;

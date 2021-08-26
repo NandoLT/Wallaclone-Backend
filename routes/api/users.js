@@ -54,6 +54,11 @@ router.post('/recoverpassword', recoverPassword);
 router.post('/resetpassword', Verify, resetPassword);
 
 /**
+ * GET /username
+ */
+router.get('/', Verify, getUser);
+
+/**
  * GET /getUserImage
  * get user image
  */
@@ -64,10 +69,6 @@ router.get('/getUserImage', Verify, getUserImage );
  */
 router.get('/:nickname', Verify, getUserAndAdverts);
 
-/**
- * GET /username
- */
-router.get('/', Verify, getUser);
 
 /**
  * DELETE /deleteuser/:userid

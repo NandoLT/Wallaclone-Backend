@@ -17,10 +17,14 @@ class UsersController {
     async getUserAndAdverts(req, res, next) {
         try {
             const user = req.params.nickname;
-            const { nickname, description, photo, province } = await User.findOne({nickname: user})
-            const user = { nickname, description, photo, province };
+            const { nickname, description, photo, province, _id } = await User.findOne({nickname: user})
+            const userData = { nickname, description, photo, province };
             //pedir anuncios de usuario concreto a mongo y componer result.
-            res.status(200).json({ result: user });
+            const userAdverts = await Advert.find({ userId: _id });
+            res.status(200).json({ result: {
+                user: userData,
+                adverts: userAdverts
+            }});
         } catch (error) {
             res.status(500).json({ message: error.message });
         }
@@ -30,9 +34,9 @@ class UsersController {
      * GET /
      */
     async getUser(req, res, next) {
+        const userId = req.apiAuthUserId;
         try {
-            const user = req.params.username;
-            const { photo, nickname, province, description } = await User.findOne({name: user});
+            const { photo, nickname, province, description } = await User.findById({_id: userId});
             const userNoPassword = { photo, nickname, province, description };
 
             res.status(200).json({ result: userNoPassword });
@@ -129,13 +133,11 @@ class UsersController {
      * GET /getUserImage
      */
     async getUserImage (req, res, next) {
-        console.log('GETUSERIMAGE');
         const authUserId = req.apiAuthUserId;
         const filter = { _id: authUserId };
 
         try {
             const imageUser = await User.findById(filter);
-            console.log('IMAGEUSER', imageUser);
             res.status(201).json({ result: imageUser.photo[0]})
         } catch (error) {
             res.status(500).json({ message: error.message });

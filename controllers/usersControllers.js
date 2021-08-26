@@ -14,11 +14,26 @@ class UsersController {
     /**
      * GET /:username
      */
+    async getUserAndAdverts(req, res, next) {
+        try {
+            const user = req.params.nickname;
+            const { nickname, description, photo, province } = await User.findOne({nickname: user})
+            const user = { nickname, description, photo, province };
+            //pedir anuncios de usuario concreto a mongo y componer result.
+            res.status(200).json({ result: user });
+        } catch (error) {
+            res.status(500).json({ message: error.message });
+        }
+    }
+
+    /**
+     * GET /
+     */
     async getUser(req, res, next) {
         try {
             const user = req.params.username;
-            const { name, surname, email } = await User.findOne({name: user})
-            const userNoPassword = { name, surname, email };
+            const { photo, nickname, province, description } = await User.findOne({name: user});
+            const userNoPassword = { photo, nickname, province, description };
 
             res.status(200).json({ result: userNoPassword });
         } catch (error) {

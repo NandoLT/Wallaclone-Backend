@@ -18,6 +18,7 @@ const {
 
 const {
     getUserImage,
+    getUserAndAdverts,
     getUser,
     deleteUser,
     updateUser,
@@ -61,7 +62,12 @@ router.get('/getUserImage', Verify, getUserImage );
 /**
  * GET /username
  */
-router.get('/:username', Verify, getUser);
+router.get('/:nickname', Verify, getUserAndAdverts);
+
+/**
+ * GET /username
+ */
+router.get('/', Verify, getUser);
 
 /**
  * DELETE /deleteuser/:userid

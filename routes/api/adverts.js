@@ -90,9 +90,9 @@ router.post('/addFavorite', Verify, addFavorite);
 router.post('/removeFavorite', Verify, removeFavorite);
 
 /**
- * POST /tags
+ * GET /tags
  * get all tags
  */
-router.get('/tags', getTags);
+router.post('/tags', getTags);
 
 module.exports = router;

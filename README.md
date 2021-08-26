@@ -51,7 +51,6 @@
     - /getMyAdverts (get my owns adverts) (jwt required in header "Authorization")
     - /getFavorites (get favorites to an specific user) (jwt required in header "Authorization")
     - /getMyFavoriteAdverts (get my owns favoirtes) (jwt required in header "Authorization")
-    - /tags (get all tags availables) 
 - DELETE<br>
     - /delete/:id (delete advert by id) (jwt required in header "Authorization")
     - /deleteImage/:advertId/:imageName (delete single image) (jwt required in header "Authorization")
@@ -62,6 +61,7 @@
         -  params { userId, productId } <b>required</b>
     - /removeFavorite (jwt required in header "Authorization")
         -  params { userId, productId } <b>required</b>
+    - /tags (get all tags availables) 
 - PUT<br>
     - /updateAdvert (jwt required in header "Authorization")
         -  params { name, status, price, tags, productId } <b> required </b> { photo } <b>optional</b>

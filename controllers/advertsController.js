@@ -288,6 +288,7 @@ class AdvertsController {
      */
     async getTags(req, res, next) {
         // por ahora solo es esta lista cerrada
+        console.log('GETTAGS')
         const tags = ['Móvil', 'Tecnologia', 'Deporte'];
         res.status(200).json({ result: tags });
     }

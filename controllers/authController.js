@@ -20,7 +20,8 @@ class AuthController {
             const usermail = await User.findOne({ email });
             const username = await User.findOne({ nickname });
 
-            if(!!usermail || !!username) {
+            // if(!!usermail || !!username) {
+            if(!!usermail {
                 const error = new Error('Email or Nickname already exist');
                 res.status(500).json({ message: error.message});
                 return;

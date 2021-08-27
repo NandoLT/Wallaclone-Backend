@@ -16,13 +16,11 @@ class AuthController {
     async register(req, res, next) {
         try {
             const data = req.body;
-            const { email } = data;
-            // const { email, nickname } = data;
+            const { email, name } = data;
             const usermail = await User.findOne({ email });
-            // const username = await User.findOne({ nickname });
+            const username = await User.findOne({ name });
 
-            // if(!!usermail || !!username) {
-            if(!!usermail {
+            if(!!usermail || !!username) {
                 const error = new Error('Email or Nickname already exist');
                 res.status(500).json({ message: error.message});
                 return;

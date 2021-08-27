@@ -39,7 +39,7 @@ router.get('/:id', getAdvert);
  * POST /getMyAdverts
  * get all my tags
  */
-router.post('/getMyAdverts', getMyAdverts);
+router.post('/getMyAdverts', Verify, getMyAdverts);
 
 /**
  * POST

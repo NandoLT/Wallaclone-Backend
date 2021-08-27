@@ -69,7 +69,7 @@ class AdvertsController {
         try {
             const userId = req.apiAuthUserId;
             const adverts = await Advert.find({ userId });
-
+            
             res.status(200).json({ result: adverts });
 
         } catch (error) {

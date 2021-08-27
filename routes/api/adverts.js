@@ -11,8 +11,8 @@ const router = express.Router();
 const {
     getAdverts,
     getAdvert,
-    getMyAdverts,
     createAdvert,
+    getMyAdverts,
     updateAdvert,
     deleteAdvert,
     deleteImage,
@@ -36,16 +36,17 @@ router.get('/', getAdverts);
 router.get('/:id', getAdvert);
 
 /**
+ * POST
+ * Create advert
+ */
+router.post('/', Verify, upload, createAdvert);
+
+/**
  * POST /getMyAdverts
  * get all my tags
  */
 router.post('/getMyAdverts', Verify, getMyAdverts);
 
-/**
- * POST
- * Create advert
- */
-router.post('/', Verify, upload, createAdvert);
 
 /**
  * PUT /updateAdvert

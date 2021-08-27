@@ -17,9 +17,9 @@ const {
 } = require('../../controllers/authController');
 
 const {
+    getUser,
     getUserImage,
     getUserAndAdverts,
-    getUser,
     deleteUser,
     updateUser,
     uploadUserImage
@@ -54,7 +54,7 @@ router.post('/recoverpassword', recoverPassword);
 router.post('/resetpassword', Verify, resetPassword);
 
 /**
- * GET /username
+ * GET /
  */
 router.get('/', Verify, getUser);
 

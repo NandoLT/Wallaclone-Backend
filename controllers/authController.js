@@ -19,7 +19,7 @@ class AuthController {
             const { email } = data;
             // const { email, nickname } = data;
             const usermail = await User.findOne({ email });
-            const username = await User.findOne({ nickname });
+            // const username = await User.findOne({ nickname });
 
             // if(!!usermail || !!username) {
             if(!!usermail {

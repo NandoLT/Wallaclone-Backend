@@ -16,7 +16,8 @@ class AuthController {
     async register(req, res, next) {
         try {
             const data = req.body;
-            const { email, nickname } = data;
+            const { email } = data;
+            // const { email, nickname } = data;
             const usermail = await User.findOne({ email });
             const username = await User.findOne({ nickname });
 

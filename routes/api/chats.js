@@ -8,5 +8,15 @@ const express = require('express');
 const router = express.Router();
 
 const {
-
+    addMessage,
+    addConversation,
+    getConversation,
+    getUserConversation,
+    getUsersConversation
 } = require('../../controllers/chatsController.js');
+
+
+/**
+ * POST / 
+ * Add messages conversation
+ */

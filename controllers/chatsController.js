@@ -8,7 +8,8 @@ const { Chats, User } = require('../models');
 
 
 class ChatsController {
-    //Messages actions
+
+    //Messages actions//
 
     /**
      * POST / 
@@ -39,7 +40,7 @@ class ChatsController {
         }
       }
 
-    //Conversations actions
+    //Conversations actions//
 
     //new conv
     /**

@@ -7,6 +7,7 @@ const { User, Advert } = require('../models');
 const emailSender = require('../microservices/email/emailSenderRequester.js');
 const userVerify = require('../libs/userVerify.js');
 const { deleteMultipleImages, deleteSingleImage } = require('../libs/awsS3');
+const { changeInAdvert } = require('../libs/advertsNotifications');
 
 class AdvertsController {
 
@@ -16,19 +17,23 @@ class AdvertsController {
     async getAdverts(req, res, next) {
         try {
             const { 
-                name, 
-                status, 
-                minPrice, 
-                maxPrice, 
-                tags, 
-                skip, 
-                limit, 
-                sort 
+                name,
+                status,
+                minPrice,
+                maxPrice,
+                tags,
+                province,
+                skip,
+                limit,
+                sort
             } = req.query;
             const advert = new Advert();
 
-            const result = await advert.fillByFilters(name, status, minPrice, maxPrice, tags, skip, limit, sort);
-            res.status(200).json({ result });
+            const result = await advert.fillByFilters(name, status, minPrice, maxPrice, tags, province, skip, limit, sort);
+            const totalFilteredAdverts = await advert.countByFilters(name, status, minPrice, maxPrice, tags, province, skip, limit, sort);
+            const totalAdverts = await advert.countByFilters(null, null, null, null, null, null, 0, 0, null);
+
+            res.status(200).json({ result, totalFilteredAdverts, totalAdverts });
         } catch (error) {
             res.status(500).json({ message: error.message });
         }
@@ -58,36 +63,62 @@ class AdvertsController {
     }
 
     /**
+     * POST /getMyAdverts
+     */
+    async getMyAdverts(req, res, next) {
+        try {
+            const userId = req.apiAuthUserId;
+            const adverts = await Advert.find({ userId });
+            
+            res.status(200).json({ result: adverts });
+
+        } catch (error) {
+            res.status(500).json({ message: error.message });
+        }
+    }
+
+    /**
+     * POST /getMyFavoriteAdverts
+     */
+    async getMyFavoriteAdverts(req, res, next) {
+        try {
+            const _id = req.apiAuthUserId;
+            const user = await User.findOne({ _id });
+            const favoriteAdvertsIds = user.favorites;
+
+            const result = await Advert.find({_id: {$in: favoriteAdvertsIds }})
+
+            res.status(200).json({ result });
+
+        } catch (error) {
+            res.status(500).json({ message: error.message });
+        }
+    }
+
+    /**
      * POST /
      */
     async createAdvert(req, res, next) {
         const data = req.body;
-        console.log('DATA', req);
-        const authUserId = req.apiAuthUserId
-        const userValidation = userVerify(data.userId, authUserId ); 
+        const userId = req.apiAuthUserId;
+        data.userId = userId;
         
-        if(userValidation) {
-            try {
-                const file = req.file;
-                console.log('FILE', file);
-                if (data.status > 3) {
-                    res.json({ message : 'The status must be a number between 0 and 3' });
-                }
-    
-                const advert = new Advert(data);
-    
-                if (file) {
-                    console.log('ORIGINAL NAME', file.originalname)
-                    advert.photo.push(file.originalname);
-                }
-    
-                const newAdvert = await advert.save();
-                res.status(201).json({ result: newAdvert });
-            } catch (error) {
-                res.status(500).json({ message: error.message });
+        try {
+            const file = req.file;
+            if (data.status > 3) {
+                res.json({ message : 'The status must be a number between 0 and 3' });
             }
-        } else {
-            res.status(401).json({ message: 'User verification invalid' });
+
+            const advert = new Advert(data);
+
+            if (file) {
+                advert.photo.push(file.originalname);
+            }
+
+            const newAdvert = await advert.save();
+            res.status(201).json({ result: newAdvert });
+        } catch (error) {
+            res.status(500).json({ message: error.message });
         }
     }
 
@@ -99,19 +130,36 @@ class AdvertsController {
         const filter = { _id: data.productId };
         const authUserId = req.apiAuthUserId;
 
-        const { userId } = await Advert.findById({ _id: filter });
+        const { userId } = await Advert.findById(filter);
 
         const userValidation = userVerify(userId, authUserId );
 
         if(userValidation) {
             try {
+                const file = req.file;
+                console.log('FILE', file);
                 if (data.status > 3) {
                     res.json({ message : 'The status must be a number between 0 and 3' });
                 }
-        
+                
+                if (file) {
+                    data.photo = [];
+                    data.photo.push(file.originalname);
+                }
+
                 const updatedAdvert = await Advert.findOneAndUpdate(filter, data, {
                     new: true
                 });
+
+                if(( updatedAdvert.status === 3 || updatedAdvert.status === 2) && (data.satus !== updatedAdvert.status)) {
+                    console.log('STATUS CHANGE');
+                    changeInAdvert(updatedAdvert, 'status' );
+                }
+                
+                if(updatedAdvert.price !== data.price) {
+                    console.log('PRICE CHANGE');
+                    changeInAdvert(updatedAdvert, 'price' );
+                }
     
                 res.status(201).json({ result: updatedAdvert });
             } catch (error) {
@@ -123,18 +171,20 @@ class AdvertsController {
     }
 
     /**
-     * DELETE /delete/:id
+     * POST /delete/:id
      */
     async deleteAdvert(req, res, next) {
-    
         const advert = req.params.id;
-        const { userId } = await  Advert.findOne({ _id: advert });
+        const { userId, photo } = await  Advert.findOne({ _id: advert });
         const authUserId = req.apiAuthUserId;
         const userValidation = userVerify(userId, authUserId);
 
         if(userValidation) {
             try {
                 await Advert.deleteOne ({ _id: advert });
+                await deleteSingleImage(process.env.AWS_S3_BUCKET, `${userId}/${photo[0]}`)
+                //Incluir borrado de id de anuncio del campo favorite de los usuarios que lo tengan 
+                //añadido así como una notificación de que se ha borrado ese anuncio y ya no le aparecerá en favorites
                 res.status(200).json({ result: `Product ${advert} deleted successfully`});
             } catch (error) {
                 res.status(500).json({ message: error.message });
@@ -146,7 +196,7 @@ class AdvertsController {
     }
 
     /**
-     * DELETE /deleteImage/:advertId/:imageName
+     * POST /deleteImage/:advertId/:imageName
      */
     async deleteImage(req, res, next){
         const _id = req.params.advertId;
@@ -171,8 +221,6 @@ class AdvertsController {
         } else {
             res.status(401).json({ message: 'User verification invalid' });
         }
-
-
     }
 
     /**
@@ -233,6 +281,16 @@ class AdvertsController {
         } catch (error) {
             res.status(500).json({ message: `Problems to remove product ${advertId} from user ${_id}`})
         }
+    }
+
+    /**
+     * POST /tags
+     */
+    async getTags(req, res, next) {
+        // por ahora solo es esta lista cerrada
+        console.log('GETTAGS')
+        const tags = ['Móvil', 'Tecnologia', 'Deporte'];
+        res.status(200).json({ result: tags });
     }
 }
 

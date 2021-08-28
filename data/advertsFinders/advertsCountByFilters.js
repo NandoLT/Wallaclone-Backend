@@ -1,6 +1,6 @@
 'use strict';
 
-async function FillByFilters(name, status, minPrice, maxPrice, tags, province) {
+async function CountByFilters(name, status, minPrice, maxPrice, tags, province) {
     const filter = {};
 
     if (name) {
@@ -32,4 +32,4 @@ async function FillByFilters(name, status, minPrice, maxPrice, tags, province) {
     return filter;
 };
 
-module.exports = FillByFilters
+module.exports = CountByFilters

@@ -1,5 +1,9 @@
 'use strict'
 
+require('dotenv').config({
+  path: __dirname + '/../.env'
+});
+
 const nodemailer = require('nodemailer');
 
 const transporter = nodemailer.createTransport({
@@ -12,7 +16,7 @@ const transporter = nodemailer.createTransport({
     },
   });
 
-transporter.verify().then(() => {
+  transporter.verify().then(() => {
     console.log('Ready for send emails');
 });
 

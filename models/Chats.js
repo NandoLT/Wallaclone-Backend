@@ -6,21 +6,23 @@ const mongoose = require('mongoose');
 const chatsSchema = mongoose.Schema (
     {
         conversationId: {
-            type: String
+            type: String,
+            unique: true
         },
         members: {
             type: Array
         },
-        sender: {
-            type: String
-        },
-        text: {
+        conversation: {
+            type: Array
+        }, 
+        productId: {
             type: String
         }
     },
-    { timestamps: true }
 );
 
 const Chats = mongoose.model('Chats', chatsSchema);
 
 module.exports = Chats;
+
+//conversation es un array de objetos con campos sender y text y timestamp

@@ -30,7 +30,7 @@ router.post('/addConversation', Verify, addConversation);
 
 
 /**
- * GET /messages/:conversationId
+ * GET /messages/:conversationId/:productId
  * Get message history of a conversation
  */
 router.get('/messages/:conversationId', Verify, getConversation);

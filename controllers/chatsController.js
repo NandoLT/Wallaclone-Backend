@@ -1,5 +1,6 @@
 'use strict';
 
+// libraries requires
 require('dotenv');
 const mongoose = require('mongoose');
 
@@ -15,7 +16,10 @@ class ChatsController {
      * POST / 
      */
     async addMessage (req, res) {
-        const newMessage = new Message(req.body);// CAMBIO
+      // REVISAR EL FRONT PORQUE PARECE QUE MANDA UN OBJETO message
+      // DONDE INCLUYE EL CONVERSATIONid QUE DEBERÍA VALER PARA GUARDAR EL  MENSAJE
+      // EN SU LUGAR CORRECTO
+        const newMessage = new Chats(req.body); 
       
         try {
           const savedMessage = await newMessage.save();
@@ -31,12 +35,12 @@ class ChatsController {
       
       async getConversation (req, res) {
         try {
-          const messages = await Message.find({ //CAMBIO
+          const messages = await Chats.find({ 
             conversationId: req.params.conversationId,
           });
           res.status(200).json({ result: messages });
         } catch (error) {
-          res.status(500).json({ message: error });
+            res.status(500).json({ message: error });
         }
       }
 
@@ -47,13 +51,13 @@ class ChatsController {
      * POST /addConversation
      */
     async addConversation (req, res) {
-            const newConversation = new Conversation({
-            members: [req.body.senderId, req.body.receiverId],
+            const newConversation = new Chats({
+              members: [req.body.senderId, req.body.receiverId],
             });
         
             try {
-            const savedConversation = await newConversation.save();
-            res.status(200).json({ result: savedConversation });
+              const savedConversation = await newConversation.save();
+              res.status(200).json({ result: savedConversation });
         } catch (error) {
             res.status(500).json({ message: error });
         }
@@ -65,7 +69,7 @@ class ChatsController {
      */
     async getUserConversation (req, res) {
         try {
-            const conversation = await Conversation.find({
+            const conversation = await Chats.find({
                 members: { $in: [req.params.userId] },
             });
             res.status(200).json({ result: conversation });
@@ -80,7 +84,7 @@ class ChatsController {
      */
     async getUsersConversation (req, res) {
         try {
-            const conversation = await Conversation.findOne({
+            const conversation = await Chats.findOne({
                 members: { $all: [req.params.firstUserId, req.params.secondUserId] },
             });
             res.status(200).json({ result: conversation });

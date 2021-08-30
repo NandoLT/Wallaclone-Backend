@@ -1,14 +1,20 @@
 [
     {   
         "name": "Fernando",
-        "surname": "NandoLT",
+        "surname": "López",
         "email":"fernando@wallapop.es",
-        "password":"1234"
+        "password":"12345",
+        "nickname": "El Extremeño",
+        "description": "Este es el perfil del Extremeño. Ojito con intentar hacerme tocomocho",
+        "province": "Cádiz"
     },
     {
         "name": "Veronica",
-        "surname": "VeroCR",
+        "surname": "Cabañas",
         "email":"veronica@wallapop.com",
-        "password":"5678"
+        "password":"12345",
+        "nickname":  "La Gaditana",
+        "Description": "Este es el perfil de la Gaditana. Me gusta el pescaito frito",
+        "province": "Cádiz"
     }
 ]

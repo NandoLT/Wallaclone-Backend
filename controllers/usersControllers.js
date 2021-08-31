@@ -3,7 +3,6 @@
 // local requires
 const { User, Advert } = require('../models');
 const { deleteMultipleImages, deleteSingleImage } = require('../libs/awsS3');
-const userVerify  = require('../libs/userVerify');
 
 // libraries requires
 require('dotenv');
@@ -17,10 +16,12 @@ class UsersController {
     async getUserAndAdverts(req, res, next) {
         try {
             const user = req.params.nickname;
-            const { nickname, description, photo, province, _id } = await User.findOne({nickname: user})
+
+            const { name, nickname, description, photo, province, _id } = await User.findOne({nickname: user})
             const userData = { nickname, description, photo, province };
-            //pedir anuncios de usuario concreto a mongo y componer result.
+
             const userAdverts = await Advert.find({ userId: _id });
+
             res.status(200).json({ result: {
                 user: userData,
                 adverts: userAdverts
@@ -36,8 +37,8 @@ class UsersController {
     async getUser(req, res, next) {
         const userId = req.apiAuthUserId;
         try {
-            const { photo, nickname, province, description } = await User.findById({_id: userId});
-            const userNoPassword = { photo, nickname, province, description };
+            const { name, photo, nickname, province, description } = await User.findById({_id: userId});
+            const userNoPassword = { name, photo, nickname, province, description };
 
             res.status(200).json({ result: userNoPassword });
         } catch (error) {
@@ -55,9 +56,8 @@ class UsersController {
 
             await User.deleteOne({ _id: userId });
     
-            // Borramos el id de esos anuncios en los favoritos de todos los usuarios
-            //Añadir notificación de aviso para usuarios de que determinado producto ha desaparecido de sus favoritos
-            // Sacar esta operación fuera para evitar que la app se quedé colgada en este punto
+            /// TODO:  Añadir notificación de aviso para usuarios de que determinado producto ha desaparecido de sus favoritos
+            /// TODO:  Sacar esta operación fuera para evitar que la app se quedé colgada en este punto
             const advertsToDelete = await Advert.find({ userId: { $in: userId }});
             const advertsIds = advertsToDelete.map( advert => advert._id.toString()); 
             const usersRemoveFavorites = await User.find({ favorites: { $in: advertsIds  }}); 
@@ -95,9 +95,7 @@ class UsersController {
      */
     async updateUser(req, res, next) {
         const file = req.file;
-        console.log('FILE USER', file)
         const data = req.body;
-        console.log('DATA USER UPDATE', data);
         const authUserId = req.apiAuthUserId;
         const filter = { _id: authUserId };
 
@@ -111,7 +109,6 @@ class UsersController {
             const updateUser = await User.findOneAndUpdate(filter, data, {
                 new: true
             });
-            console.log('UPDATEDUSER', updateUser);
             res.status(201).json({ result: updateUser });
         } catch (error) {
             res.status(500).json({ message: error.message });
@@ -136,7 +133,6 @@ class UsersController {
         } catch (error) {
             res.status(500).json({ message: error.message });
         }
-
     }
 
     /**

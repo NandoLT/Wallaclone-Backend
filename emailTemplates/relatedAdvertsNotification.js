@@ -2,15 +2,16 @@ require('dotenv');
 
 module.exports = (adverts) => {
 
-    const tableAdverts = () => {
-        adverts.forEach(advert => {
+        const tableAdvertsRelated = adverts.map(advert => {
+            console.log('ADVERT SIMPLE',advert);
+            return( 
             `<tr>
-                <th><ahref=${process.env.URL_BASE_FRONT}/adverts/${advert._id}>${advert.name}</a></th>
+                <th><a href=${process.env.URL_BASE_FRONT}/adverts/${advert.name}/${advert._id}>${advert.name}</a></th>
                 <th>${advert.description}</th>
                 <th>${advert.price}</th>
             </tr>`
+            );
         });
-    }
 
     return (
     `<div>
@@ -24,7 +25,7 @@ module.exports = (adverts) => {
                 <th>Description</th>
                 <th>Price</th>
             </tr>
-            ${tableAdverts}
+            ${tableAdvertsRelated}
         </table>
         <br>
     </div>`);

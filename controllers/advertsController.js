@@ -182,8 +182,8 @@ class AdvertsController {
             try {
                 await Advert.deleteOne ({ _id: advert });
                 await deleteSingleImage(process.env.AWS_S3_BUCKET, `${userId}/${photo[0]}`)
-                //Incluir borrado de id de anuncio del campo favorite de los usuarios que lo tengan 
-                //añadido así como una notificación de que se ha borrado ese anuncio y ya no le aparecerá en favorites
+                /// TODO:  Incluir borrado de id de anuncio del campo favorite de los usuarios que lo tengan 
+                /// TODO:  añadido así como una notificación de que se ha borrado ese anuncio y ya no le aparecerá en favorites
                 res.status(200).json({ result: `Product ${advert} deleted successfully`});
             } catch (error) {
                 res.status(500).json({ message: error.message });
@@ -287,7 +287,6 @@ class AdvertsController {
      */
     async getTags(req, res, next) {
         // por ahora solo es esta lista cerrada
-        console.log('GETTAGS')
         const tags = ['Móvil', 'Tecnologia', 'Deporte'];
         res.status(200).json({ result: tags });
     }

@@ -80,7 +80,7 @@ router.delete('/deleteuser', Verify, deleteUser);
  * PUT /updateUser
  * update user info
  */
-router.put('/updateuser', Verify, updateUser);
+router.put('/updateuser', Verify, upload, updateUser);
 
 /**
  * POST /userImage

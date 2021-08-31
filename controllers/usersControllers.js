@@ -94,14 +94,24 @@ class UsersController {
      * UPDATE /
      */
     async updateUser(req, res, next) {
+        const file = req.file;
+        console.log('FILE USER', file)
         const data = req.body;
+        console.log('DATA USER UPDATE', data);
         const authUserId = req.apiAuthUserId;
         const filter = { _id: authUserId };
 
-        try {        
+        try {     
+            
+            if (file) {
+                data.photo = [];
+                data.photo.push(file.originalname);
+            }
+
             const updateUser = await User.findOneAndUpdate(filter, data, {
                 new: true
             });
+            console.log('UPDATEDUSER', updateUser);
             res.status(201).json({ result: updateUser });
         } catch (error) {
             res.status(500).json({ message: error.message });

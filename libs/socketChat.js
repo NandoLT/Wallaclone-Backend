@@ -17,11 +17,11 @@ const addUser = (userId, socketId) => {
 };
 
 const removeUser = (socketId) => {
-users = users.filter((user) => user.socketId !== socketId);
+    users = users.filter((user) => user.socketId !== socketId);
 };
 
 const getUser = (userId) => {
-return users.find((user) => user.userId === userId);
+    return users.find((user) => user.userId === userId);
 };
 
 io.on("connection", (socket) => {
@@ -38,8 +38,8 @@ io.on("connection", (socket) => {
     socket.on("sendMessage", ({ senderId, receiverId, text }) => {
         const user = getUser(receiverId);
         io.to(user.socketId).emit("getMessage", {
-        senderId,
-        text,
+            senderId,
+            text,
         });
     });
 

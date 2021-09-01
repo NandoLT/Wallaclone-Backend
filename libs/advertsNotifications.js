@@ -10,7 +10,9 @@ const emailSender = require('../microservices/email/emailSenderRequester.js');
 const emailData = require('../libs/emailData');
 const changePriceNotificationTemplate = require('../emailTemplates/changePriceNotification');
 const changeStatusNotificationTemplate = require('../emailTemplates/changeStatusnotification');
-const realtedAdvertsNotificactionTemplate = require('../emailTemplates/relatedAdvertsNotification');
+const relatedAdvertsNotificactionTemplate = require('../emailTemplates/relatedAdvertsNotification');
+// const headerTemplate = require('../emailTemplates/emailHeaderTemplate');
+// const footerTemplate = require('../emailTemplates/emailFooterTemplate');
 
 const changeInAdvert = async (updatedAdvert, changeType) => {
 
@@ -22,7 +24,9 @@ const changeInAdvert = async (updatedAdvert, changeType) => {
 
     let template = '';
     const related = await relatedAds(updatedAdvert);
-    const relatedTemplate = realtedAdvertsNotificactionTemplate(related);
+    const relatedTemplate = relatedAdvertsNotificactionTemplate(related);
+    // const header = headerTemplate();
+    // const footer = footerTemplate();
 
     if(changeType.type === 'status') {
 
@@ -47,13 +51,22 @@ const relatedAds = async (advertExample) => {
     const minPrice = advertExample.price * process.env.MIN_PRICE_PERCENTAGE;
     const maxPrice = advertExample.price * process.env.MAX_PRICE_PERCENTAGE;
     const status = 0;
-    const tags = advertExample.tags;
+    const advertId = advertExample._id;
+    // const tags = advertExample.tags;
 
     const advert = new Advert();
 
-    const result = await advert.fillByFilters(name, status, minPrice, maxPrice, tags);
+    const result = await advert.fillByFilters(name, status, minPrice, maxPrice);
 
-    return result
+    const resultFilter = result.filter( item => {
+        if(item._id != advertId.toString()){
+            return item;
+        } else {
+            console.log('REMOVED:', item.name);
+        }
+      })
+
+    return resultFilter;
 }
 
 module.exports = { changeInAdvert, relatedAds };

@@ -2,7 +2,8 @@ module.exports = (advert, relatedTemplate) => {
 
     relatedTemplate ? relatedTemplate : '';
     return (
-    `<div>
+    `
+    <div>
         <h1>Wallaclone Notifications System</h1>
         <p>The next advert's price has been modified.<br>
         It's include into your favorite list, please contact with the vendor if you are still interested.</p>
@@ -15,5 +16,6 @@ module.exports = (advert, relatedTemplate) => {
         <hr>
         ${relatedTemplate}
         <br>
-    </div>`);
+    </div>
+    `);
 }

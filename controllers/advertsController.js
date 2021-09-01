@@ -30,7 +30,7 @@ class AdvertsController {
             const advert = new Advert();
 
             const result = await advert.fillByFilters(name, status, minPrice, maxPrice, tags, province, skip, limit, sort);
-            const totalFilteredAdverts = await advert.countByFilters(name, status, minPrice, maxPrice, tags, province, skip, limit, sort);
+            const totalFilteredAdverts = await advert.countByFilters(name, status, minPrice, maxPrice, tags, province, 0, 0, sort);
             const totalAdverts = await advert.countByFilters(null, null, null, null, null, null, 0, 0, null);
 
             res.status(200).json({ result, totalFilteredAdverts, totalAdverts });

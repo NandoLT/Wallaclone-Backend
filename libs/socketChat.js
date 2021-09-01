@@ -1,6 +1,8 @@
 'use strict';
 
-require('dotenv');
+require('dotenv').config({
+    path: __dirname + '/../.env'
+  });
 
 const io = require("socket.io")(3005, {
     cors: {

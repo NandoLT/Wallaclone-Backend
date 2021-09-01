@@ -21,7 +21,7 @@ const changeInAdvert = async (updatedAdvert, changeType) => {
     });
 
     let template = '';
-    const related = relatedAds(updatedAdvert);
+    const related = await relatedAds(updatedAdvert);
     const relatedTemplate = realtedAdvertsNotificactionTemplate(related);
 
     if(changeType.type === 'status') {
@@ -47,11 +47,11 @@ const relatedAds = async (advertExample) => {
     const minPrice = advertExample.price * process.env.MIN_PRICE_PERCENTAGE;
     const maxPrice = advertExample.price * process.env.MAX_PRICE_PERCENTAGE;
     const status = 0;
-    // const tags = advertExample.tags;
+    const tags = advertExample.tags;
 
     const advert = new Advert();
 
-    const result = await advert.fillByFilters(name, status, minPrice, maxPrice);
+    const result = await advert.fillByFilters(name, status, minPrice, maxPrice, tags);
 
     return result
 }

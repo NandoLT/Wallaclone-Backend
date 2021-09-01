@@ -57,7 +57,7 @@ class ChatsController {
 
       const conversationData = {
         conversationId: req.body.conversationId,
-        members: [req.body.senderId, req.body.receiverId], 
+        members: req.body.members, 
         productId: req.body.productId
       }
       const newConversation = new Chats(conversationData);

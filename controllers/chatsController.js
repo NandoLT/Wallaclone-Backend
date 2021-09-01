@@ -22,10 +22,10 @@ class ChatsController {
       const dataMessage = { sender, text }
       
       try {
-        const savedMessage = await Chats.findByIdAndUpdate(filter, dataMessage, {
-          new: true
-        }) 
-        res.status(200).json({ result:savedMessage });
+        const conversation = await Chats.findOne({conversationId: filter});
+        conversation.conversation.push(dataMessage);
+        conversation.save() 
+        res.status(200).json({ result:conversation });
       } catch (error) {
         res.status(500).json({ message: error });
       }

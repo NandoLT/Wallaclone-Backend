@@ -6,6 +6,14 @@ const io = require("socket.io")(3005, {
     cors: {
       origin: process.env.SOCKET_CHAT_ORIGIN,
     },
+    handlePreflightRequest: (rea, res) => {
+        res.writeHead(200, {
+            "Acces-Control-Allow-Origin": "*",
+            "Acces-Control-Allow-Methods": "GET, POST",
+            "Acces-Control-Allow-Headers":"Custom-Header"
+        });
+        res.end()
+    }
 });
 console.log('IO STAY CREATED OK');
   

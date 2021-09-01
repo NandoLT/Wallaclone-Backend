@@ -5,6 +5,8 @@ const { User } = require('../models');
 const emailSender = require('../microservices/email/emailSenderRequester.js');
 const { Sign } = require('../libs/jwtAuth');
 const recoverPassTemplate = require('../emailTemplates/recoverPassTemplate');
+const headerTemplate = require('../emailTemplates/emailHeaderTemplate');
+const footerTemplate = require('../emailTemplates/emailFooterTemplate');
 const emailData = require('../libs/emailData');
 const { createUserFolder } = require('../libs/awsS3')
 
@@ -110,7 +112,9 @@ class AuthController {
                     res.status(500).json({ message: err.message });
                 }
                 
-                const template = recoverPassTemplate(user);
+                const header = headerTemplate();
+                const footer = footerTemplate();
+                const template = recoverPassTemplate(user, header, footer);
 
                 const data = emailData(process.env.EMAIL_DATA_FROM_RECOVER, user.email, process.env.EMAIL_DATA_SUBJECT_RECOVER, template);
 

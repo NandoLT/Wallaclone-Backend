@@ -146,16 +146,20 @@ class AdvertsController {
                     data.photo.push(file.originalname);
                 }
 
-                const updatedAdvert = await Advert.findOneAndUpdate(filter, data, {
-                    new: true
-                });
-
-                if(( updatedAdvert.status === 3 || updatedAdvert.status === 2) && (data.satus !== updatedAdvert.status)) {
-                    console.log('STATUS CHANGE');
+                const updatedAdvert = await Advert.findOneAndUpdate(filter, data);
+                // const updatedAdvert = await Advert.findOneAndUpdate(filter, data, {
+                //     new: true
+                // });
+                console.log('DATA',data);
+                console.log('UPDATED ADVERT', updatedAdvert);
+                console.log('condicional', ( updatedAdvert.status.toString() === '3' || updatedAdvert.status.toString() === '2'), (data.status.toString() !== updatedAdvert.status.toString()))
+                console.log('condicional partido', updatedAdvert.status.toString(), updatedAdvert.status.toString(), data.status.toString(), updatedAdvert.status.toString());
+                if(( updatedAdvert.status.toString() === '3' || updatedAdvert.status.toString() === '2') && (data.status.toString() !== updatedAdvert.status.toString())) {
+                    console.log('condicional', ( updatedAdvert.status.toString() === '3' || updatedAdvert.status.toString() === '2'), (data.status.toString() !== updatedAdvert.status.toString()))
                     changeInAdvert(updatedAdvert, 'status' );
                 }
                 
-                if(updatedAdvert.price !== data.price) {
+                if(updatedAdvert.price.toString() !== data.price.toString()) {
                     console.log('PRICE CHANGE');
                     changeInAdvert(updatedAdvert, 'price' );
                 }

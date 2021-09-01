@@ -11,8 +11,8 @@ const emailData = require('../libs/emailData');
 const changePriceNotificationTemplate = require('../emailTemplates/changePriceNotification');
 const changeStatusNotificationTemplate = require('../emailTemplates/changeStatusnotification');
 const relatedAdvertsNotificactionTemplate = require('../emailTemplates/relatedAdvertsNotification');
-// const headerTemplate = require('../emailTemplates/emailHeaderTemplate');
-// const footerTemplate = require('../emailTemplates/emailFooterTemplate');
+const headerTemplate = require('../emailTemplates/emailHeaderTemplate');
+const footerTemplate = require('../emailTemplates/emailFooterTemplate');
 
 const changeInAdvert = async (updatedAdvert, changeType) => {
 
@@ -25,16 +25,16 @@ const changeInAdvert = async (updatedAdvert, changeType) => {
     let template = '';
     const related = await relatedAds(updatedAdvert);
     const relatedTemplate = relatedAdvertsNotificactionTemplate(related);
-    // const header = headerTemplate();
-    // const footer = footerTemplate();
+    const header = headerTemplate();
+    const footer = footerTemplate();
 
-    if(changeType.type === 'status') {
+    if(changeType === 'status') {
 
-        template = changeStatusNotificationTemplate(updatedAdvert, relatedTemplate);
+        template = changeStatusNotificationTemplate(updatedAdvert, relatedTemplate, header, footer);
         
     } else {
 
-        template = changePriceNotificationTemplate(updatedAdvert, relatedTemplate);
+        template = changePriceNotificationTemplate(updatedAdvert, relatedTemplate, header, footer);
         
     }
     

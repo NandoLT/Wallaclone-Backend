@@ -32,6 +32,7 @@ class AdvertsController {
             const result = await advert.fillByFilters(name, status, minPrice, maxPrice, tags, province, skip, limit, sort);
             const totalFilteredAdverts = await advert.countByFilters(name, status, minPrice, maxPrice, tags, province, 0, 0, sort);
             const totalAdverts = await advert.countByFilters(null, null, null, null, null, null, 0, 0, null);
+            result.reverse();
 
             res.status(200).json({ result, totalFilteredAdverts, totalAdverts });
         } catch (error) {
@@ -147,15 +148,9 @@ class AdvertsController {
                 }
 
                 const updatedAdvert = await Advert.findOneAndUpdate(filter, data);
-                // const updatedAdvert = await Advert.findOneAndUpdate(filter, data, {
-                //     new: true
-                // });
-                console.log('DATA',data);
-                console.log('UPDATED ADVERT', updatedAdvert);
-                console.log('condicional', ( updatedAdvert.status.toString() === '3' || updatedAdvert.status.toString() === '2'), (data.status.toString() !== updatedAdvert.status.toString()))
-                console.log('condicional partido', updatedAdvert.status.toString(), updatedAdvert.status.toString(), data.status.toString(), updatedAdvert.status.toString());
+                
                 if(( updatedAdvert.status.toString() === '3' || updatedAdvert.status.toString() === '2') && (data.status.toString() !== updatedAdvert.status.toString())) {
-                    console.log('condicional', ( updatedAdvert.status.toString() === '3' || updatedAdvert.status.toString() === '2'), (data.status.toString() !== updatedAdvert.status.toString()))
+                    console.log('STATUS CHANGE');
                     changeInAdvert(updatedAdvert, 'status' );
                 }
                 

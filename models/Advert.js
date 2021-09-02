@@ -47,7 +47,7 @@ const statusEnum = {
 advertSchema.methods.fillByFilters = async function (name, status, minPrice, maxPrice, tags, province, skip, limit, sort) {
     const filters = await FillByFilters(name, status, minPrice, maxPrice, tags, province);
     
-    const query = Advert.find(filters);
+    const query = Advert.find(filters).sort({ _id: -1 });
     query.skip(parseInt(skip));
     query.limit(parseInt(limit));
     query.sort(sort);
